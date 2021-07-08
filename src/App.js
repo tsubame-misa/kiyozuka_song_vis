@@ -28,7 +28,8 @@ function HorizontalAxis({ len, term, name, w }) {
                 style={{ userSelect: "none" }}
                 key={i}
               >
-                {Math.round(t.start)}
+                {Math.floor(Math.floor(t.start) / 60)}:
+                {Math.floor(t.start % 60)}
               </text>
             </g>
           );
@@ -67,18 +68,18 @@ function App() {
 
   function coloJudge(key, pitch) {
     const hue = [
-      "#FF0000",
-      "#FF7F00",
-      "#FF7F00",
-      "#FF7F00",
-      "#00FF00",
-      "#00FF7F",
-      "#00FFFF",
-      "#007FFF",
-      "#0000FF",
-      "#7F00FF",
-      "#FF00FF",
-      "#FF007F",
+      "#FF0000", //C red
+      "#FF7F00", //C# orange
+      "#FF7F00", //D yellow
+      "#FF7F00", //D# chartreuse
+      "#00FF00", //E lime
+      "#00FF7F", //F springgreen
+      "#00FFFF", //F# cyan
+      "#007FFF", //G deepskyblue
+      "#0000FF", //G# blue
+      "#7F00FF", //A darckviolet
+      "#FF00FF", //A# magenta
+      "#FF007F", //Deeppink
     ];
     const colorScale = d3
       .scaleLinear()
