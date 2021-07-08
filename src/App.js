@@ -47,12 +47,13 @@ function App() {
     (async () => {
       const request = await fetch(song);
       const musicData = await request.json();
+      console.log(musicData);
       const sectionData = await musicData.sections;
       const Data = musicData.segments;
       for (let s = 1; s < sectionData.length; s++) {
         for (let d of Data) {
           if (
-            sectionData[s - 1].start < d.start &&
+            sectionData[s - 1].start <= d.start &&
             d.start < sectionData[s].start
           ) {
             d["key"] = sectionData[s].key;
@@ -99,7 +100,7 @@ function App() {
     bottom: 10,
   };
   const contentWidth = 1600;
-  const contentHeight = 100;
+  const contentHeight = 200;
 
   const svgWidth = margin.left + margin.right + contentWidth;
   const svgHeight = margin.top + margin.bottom + contentHeight;
@@ -129,14 +130,41 @@ function App() {
               {[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11].map((i) => {
                 return data.slice(time - 200, time).map((d, j) => {
                   return (
-                    <rect
-                      x={len * j}
-                      y={len * i}
-                      width={len}
-                      height={len}
-                      fill={coloJudge(d.key, d.pitches[i])}
-                      key={i * data.slice(time - 200, time).length + j}
-                    />
+                    <g>
+                      <rect
+                        x={len * j}
+                        y={len * i}
+                        width={len}
+                        height={len}
+                        fill={coloJudge(d.key, d.pitches[i])}
+                        key={i * data.slice(time - 200, time).length + j}
+                      />
+                      {j !== 0 ? (
+                        /**TODO:上下逆？ */
+                        <g transform={`translate(0, 110) `}>
+                          <line
+                            x1={len * (j - 1)}
+                            y1={
+                              data.slice(time - 200, time)[j - 1].loudness_max +
+                              60
+                            }
+                            x2={len * j}
+                            y2={d.loudness_max + 60}
+                            stroke={coloJudge(d.key, 1)}
+                          />
+                          <line
+                            x1={len * (j - 1)}
+                            y1={60}
+                            x2={len * j}
+                            y2={60}
+                            strokeWidth="0.5px"
+                            stroke="black"
+                          />
+                        </g>
+                      ) : (
+                        []
+                      )}
+                    </g>
                   );
                 });
               })}
