@@ -17,7 +17,7 @@ function HorizontalAxis({ len, term, name, w }) {
         if (i % 50 === 0) {
           return (
             <g
-              transform={`translate(${len * i + len}, -15) rotate(-45)`}
+              transform={`translate(${len * i + len}, -20) rotate(-45)`}
               key={i}
             >
               <text
@@ -26,8 +26,9 @@ function HorizontalAxis({ len, term, name, w }) {
                 dominantBaseline="central"
                 fontSize="8"
                 style={{ userSelect: "none" }}
+                key={i}
               >
-                {t.start}
+                {Math.round(t.start)}
               </text>
             </g>
           );
@@ -38,12 +39,12 @@ function HorizontalAxis({ len, term, name, w }) {
 }
 
 function App() {
+  const [song, setSong] = useState("baby_got_bless_you.json");
   const [data, setData] = useState([]);
-  const [data2, setData2] = useState([]);
 
   useEffect(() => {
     (async () => {
-      const request = await fetch("baby_got_bless_you.json");
+      const request = await fetch(song);
       const musicData = await request.json();
       const sectionData = await musicData.sections;
       const Data = musicData.segments;
@@ -53,32 +54,16 @@ function App() {
             sectionData[s - 1].start < d.start &&
             d.start < sectionData[s].start
           ) {
-            console.log("here");
             d["key"] = sectionData[s].key;
+          } else if (d.start > sectionData[sectionData.length - 1].start) {
+            d["key"] = sectionData[s - 1].key;
           }
         }
       }
       setData(Data);
-
-      const request2 = await fetch("for_tomorrrow.json");
-      const musicData2 = await request2.json();
-      const sectionData2 = await musicData2.sections;
-      const Data2 = musicData2.segments;
-      for (let s = 1; s < sectionData2.length; s++) {
-        for (let d of Data2) {
-          if (
-            sectionData2[s - 1].start < d.start &&
-            d.start < sectionData2[s].start
-          ) {
-            d["key"] = sectionData2[s].key;
-          }
-        }
-      }
-      setData2(Data2);
     })();
-  }, []);
+  }, [song]);
   console.log(data);
-  //console.log(data2);
 
   function coloJudge(key, pitch) {
     const hue = [
@@ -101,11 +86,11 @@ function App() {
       .range(["#FFFFFF", hue[key]]);
 
     const color = colorScale(pitch);
-    console.log(color, key, pitch);
+    //console.log(color, key, pitch);
     return color;
   }
 
-  var scale = d3.scaleLinear().domain([0, 5]).range(["#FFFFFF", "#0C060F"]);
+  //var scale = d3.scaleLinear().domain([0, 5]).range(["#FFFFFF", "#0C060F"]);
   const margin = {
     left: 10,
     right: 30,
@@ -120,7 +105,15 @@ function App() {
   const len = 8;
   return (
     <div>
-      {[200, 400, 600, 800, Math.min(data2.length, 1000)].map((time) => {
+      <select
+        onChange={(e) => {
+          setSong(e.target.value);
+        }}
+      >
+        <option value="baby_got_bless_you.json">Baby god bless you</option>
+        <option value="for_tomorrrow.json">For Tomorrow</option>
+      </select>
+      {[200, 400, 600, 800, Math.min(data.length, 10000)].map((time) => {
         return (
           <div>
             <svg
@@ -128,7 +121,7 @@ function App() {
             >
               <HorizontalAxis
                 len={len}
-                term={data2.slice(time - 200, time)}
+                term={data.slice(time - 200, time)}
                 name={""}
                 w={1000}
               />
@@ -141,9 +134,7 @@ function App() {
                       width={len}
                       height={len}
                       fill={coloJudge(d.key, d.pitches[i])}
-                      //fill={scale(d.pitches[i])}
-                      //fill={d3.interpolateTurbo(d.pitches[i])}
-                      // key={i * segment.pitches.length + j}
+                      key={i * data.slice(time - 200, time).length + j}
                     />
                   );
                 });
