@@ -140,16 +140,15 @@ function App() {
                         key={i * data.slice(time - 200, time).length + j}
                       />
                       {j !== 0 ? (
-                        /**TODO:上下逆？ */
                         <g transform={`translate(0, 110) `}>
                           <line
                             x1={len * (j - 1)}
                             y1={
-                              data.slice(time - 200, time)[j - 1].loudness_max +
-                              60
+                              -1 *
+                              data.slice(time - 200, time)[j - 1].loudness_max
                             }
                             x2={len * j}
-                            y2={d.loudness_max + 60}
+                            y2={-1 * d.loudness_max}
                             stroke={coloJudge(d.key, 1)}
                           />
                           <line
