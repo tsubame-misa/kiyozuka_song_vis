@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
 import * as d3 from "d3";
+import img from "./icon.png";
+import request from "request";
 
 function HorizontalAxis({ len, term, name, w }) {
   return (
@@ -40,6 +42,26 @@ function HorizontalAxis({ len, term, name, w }) {
 }
 
 function App() {
+  const spotify = {
+    ClientId: process.env.REACT_APP_CLIENTID,
+    ClientSecret: process.env.REACT_APP_CLIENTSECRET,
+  };
+
+  let authOptions = {
+    url: "https://accounts.spotify.com/api/token",
+    headers: {
+      Authorization:
+        "Basic " +
+        new Buffer.from(spotify.ClientId + ":" + spotify.ClientSecret).toString(
+          "base64"
+        ),
+    },
+    form: {
+      grant_type: "client_credentials",
+    },
+    json: true,
+  };
+
   const [song, setSong] = useState("baby_got_bless_you.json");
   const [data, setData] = useState([]);
 
@@ -63,6 +85,23 @@ function App() {
         }
       }
       setData(Data);
+
+      /*request.post(authOptions, function (error, response, body) {
+        if (!error && response.statusCode === 200 && data.length > 0) {
+          // use the access token to access the Spotify Web API
+          var token = body.access_token;
+          var options = {
+            url: `https://api.spotify.com/v1/artists/1vCWHaC5f2uS3yhpwWbIA6/albums?album_type=SINGLE&offset=20&limit=10`,
+            headers: {
+              Authorization: "Bearer " + token,
+            },
+            json: true,
+          };
+          request.get(options, function (error, response, body) {
+            setSimilarSongs(body.tracks);
+          });
+        }
+      });*/
     })();
   }, [song]);
   console.log(data);
@@ -80,7 +119,7 @@ function App() {
       "#0000FF", //G# blue
       "#7F00FF", //A darckviolet
       "#FF00FF", //A# magenta
-      "#FF007F", //Deeppink
+      "#FF007F", //B Deeppink
     ];
     const colorScale = d3
       .scaleLinear()
@@ -92,7 +131,7 @@ function App() {
     return color;
   }
 
-  //var scale = d3.scaleLinear().domain([0, 5]).range(["#FFFFFF", "#0C060F"]);
+  var scale = d3.scaleLinear().domain([0, 1]).range(["#FFFFFF", "#0C060F"]);
   const margin = {
     left: 10,
     right: 30,
@@ -131,14 +170,6 @@ function App() {
                 return data.slice(time - 200, time).map((d, j) => {
                   return (
                     <g>
-                      <rect
-                        x={len * j}
-                        y={len * i}
-                        width={len}
-                        height={len}
-                        fill={coloJudge(d.key, d.pitches[i])}
-                        key={i * data.slice(time - 200, time).length + j}
-                      />
                       {j !== 0 ? (
                         <g transform={`translate(0, 110) `}>
                           <line
@@ -149,7 +180,8 @@ function App() {
                             }
                             x2={len * j}
                             y2={-1 * d.loudness_max}
-                            stroke={coloJudge(d.key, 1)}
+                            //stroke={coloJudge(d.key, 1)}
+                            stroke="black"
                           />
                           <line
                             x1={len * (j - 1)}
@@ -163,6 +195,29 @@ function App() {
                       ) : (
                         []
                       )}
+                      <g transform={`translate(0, 110) `}>
+                        <rect
+                          x={len * j}
+                          y={-20 + len * 0.85 * i}
+                          width={len}
+                          height={len * 0.85}
+                          //fill={coloJudge(d.key, d.pitches[i])}
+                          //fill={d3.interpolateTurbo(d.pitches[i])}
+                          fill={coloJudge(d.key, 1)}
+                          fillOpacity={0.1}
+                          key={i * data.slice(time - 200, time).length + j}
+                        />
+                      </g>
+                      <rect
+                        x={len * j}
+                        y={len * i}
+                        width={len}
+                        height={len}
+                        //fill={coloJudge(d.key, d.pitches[i])}
+                        //fill={d3.interpolateTurbo(d.pitches[i])}
+                        fill={scale(d.pitches[11 - i])}
+                        key={i * data.slice(time - 200, time).length + j}
+                      />
                     </g>
                   );
                 });
