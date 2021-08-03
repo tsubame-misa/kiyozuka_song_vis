@@ -161,7 +161,8 @@ function App() {
   const svgWidth = margin.left + margin.right + contentWidth;
   const svgHeight = margin.top + margin.bottom + contentHeight;
   const len = 0.3;
-  const scaleSize = 10;
+  //これも何かしらの計算で出した方がいい
+  const scaleSize = 8;
   const len2 = 15;
 
   let w_min = 100000;
@@ -181,6 +182,8 @@ function App() {
   }
   //console.log(testArray);
 
+  const testPad = 0;
+
   const pt = 20;
   const padding = 10;
   const linePadding = 15;
@@ -188,7 +191,7 @@ function App() {
   const dBScale = d3
     .scaleLinear()
     .domain(d3.extent(data, (item) => item.loudness_max))
-    .range([5, linePadding])
+    .range([2.5, linePadding])
     .nice();
 
   return (
@@ -226,10 +229,10 @@ function App() {
               return (
                 <g>
                   <line
-                    x1={xScale2(item.start) * 5}
+                    x1={xScale2(item.start) * scaleSize}
                     //y1={-pt}
                     y1={pt / 2}
-                    x2={xScale2(item.start) * 5}
+                    x2={xScale2(item.start) * scaleSize}
                     //y2={pt * 2 + linePadding * 12}
                     y2={pt + pt / 2 + linePadding * 11}
                     strokeWidth="0.3px"
@@ -242,9 +245,9 @@ function App() {
               return (
                 <g>
                   <line
-                    x1={xScale2(item.start) * 5}
+                    x1={xScale2(item.start) * scaleSize}
                     y1={-pt / 2}
-                    x2={xScale2(item.start) * 5}
+                    x2={xScale2(item.start) * scaleSize}
                     y2={(pt * 3) / 2 + linePadding * 12}
                     strokeWidth="1px"
                     //stroke="black"
@@ -259,7 +262,81 @@ function App() {
                   <g>
                     <circle
                       //key={item.start}
-                      cx={padding + xScale2(item.start) * 5}
+                      cx={padding + xScale2(item.start) * scaleSize}
+                      cy={pt + linePadding * j}
+                      r={dBScale(item.loudness_max)}
+                      //fill={coloJudge(item.key, item.pitches[11 - j])}
+                      fill={scale(item.pitches[11 - j])}
+                      opacity="0.75"
+                      //style={{ transitionDuration: "1s" }}
+                    />
+                  </g>
+                );
+              });
+            })}
+          </g>
+        </svg>
+      </div>
+
+      <div style={{ width: "100%" }}>
+        <svg
+          width={svgWidth * 3}
+          height={svgHeight}
+          viewBox={`${-margin.left} ${-margin.top} ${
+            svgWidth * 6
+          } ${svgHeight}`}
+        >
+          <g>
+            {[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11].map((idx) => {
+              return (
+                <line
+                  x1={padding}
+                  y1={pt + linePadding * idx}
+                  x2={svgWidth * 6}
+                  y2={10 + linePadding * idx}
+                  strokeWidth="0.1px"
+                  stroke="black"
+                />
+              );
+            })}
+            {beats.map((item, id) => {
+              return (
+                <g>
+                  <line
+                    x1={xScale2(item.start) * scaleSize}
+                    //y1={-pt}
+                    y1={pt / 2}
+                    x2={xScale2(item.start) * scaleSize}
+                    //y2={pt * 2 + linePadding * 12}
+                    y2={pt + pt / 2 + linePadding * 11}
+                    strokeWidth="0.3px"
+                    stroke="black"
+                  />
+                </g>
+              );
+            })}
+            {bar.map((item, id) => {
+              return (
+                <g>
+                  <line
+                    x1={xScale2(item.start) * scaleSize}
+                    y1={-pt / 2}
+                    x2={xScale2(item.start) * scaleSize}
+                    y2={(pt * 3) / 2 + linePadding * 12}
+                    strokeWidth="1px"
+                    //stroke="black"
+                    stroke="orange"
+                  />
+                </g>
+              );
+            })}
+            {data.map((item, i) => {
+              return item.pitches.map((p, j) => {
+                return (
+                  <g>
+                    <circle
+                      //key={item.start}
+                      cx={padding + xScale2(item.start) * scaleSize}
                       cy={pt + linePadding * j}
                       r={dBScale(item.loudness_max)}
                       //fill={coloJudge(item.key, item.pitches[11 - j])}
