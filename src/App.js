@@ -138,12 +138,12 @@ function App() {
   var scale = d3.scaleLinear().domain([0, 1]).range(["#FFFFFF", "#0C060F"]);
   const margin = {
     left: 100,
-    right: 10,
+    right: 100,
     top: 0,
     bottom: 0,
   };
   //曲の長さによって変えないとダメそう
-  const contentWidth = 4000;
+  const contentWidth = 4500;
   const contentHeight = 250;
 
   const xScale2 = d3
@@ -176,7 +176,6 @@ function App() {
 
   let testPadY = 0;
   let testPadX = 0;
-  const scoreWidth = 3000;
 
   const pt = 20;
   const padding = 10;
@@ -216,11 +215,9 @@ function App() {
 
       <div style={{ width: "100%", height: "90vh" }}>
         <svg
-          width={svgWidth * 4}
+          width={svgWidth * 0.3}
           height={3000}
-          viewBox={`${-margin.left} ${-margin.top} ${
-            svgWidth * 10
-          } ${svgHeight}`}
+          viewBox={`${-margin.left} ${-margin.top} ${svgWidth} ${svgHeight}`}
         >
           {[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11].map((idx) => {
             return (
@@ -228,7 +225,7 @@ function App() {
                 <line
                   x1={padding}
                   y1={pt + linePadding * idx}
-                  x2={scoreWidth}
+                  x2={contentWidth}
                   y2={10 + linePadding * idx}
                   strokeWidth="0.1px"
                   stroke="black"
@@ -250,16 +247,16 @@ function App() {
           })}
           <g>
             {AllData.map((item) => {
-              if (testPadX + xScale2(item.start) * scaleSize > 3000) {
+              if (testPadX + xScale2(item.start) * scaleSize > contentWidth) {
                 testPadY += 250;
-                testPadX -= 3000;
+                testPadX -= contentWidth;
                 return [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11].map((idx) => {
                   return (
                     <g>
                       <line
                         x1={0}
                         y1={pt + linePadding * idx + testPadY}
-                        x2={scoreWidth}
+                        x2={contentWidth}
                         y2={10 + linePadding * idx + testPadY}
                         strokeWidth="0.1px"
                         stroke="black"
@@ -275,9 +272,9 @@ function App() {
                             stroke="black"
                           />
                           <line
-                            x1={scoreWidth}
+                            x1={contentWidth}
                             y1={pt / 2 + testPadY}
-                            x2={scoreWidth}
+                            x2={contentWidth}
                             y2={pt / 2 + linePadding * 11 + testPadY}
                             strokeWidth="0.3px"
                             stroke="black"
