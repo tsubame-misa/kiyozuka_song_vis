@@ -208,6 +208,8 @@ function App() {
   let musicKey = data[0]?.key;
   let testPadY = 0;
   let testPadX = 0;
+  let testPadY2 = 0;
+  let testPadX2 = 0;
   const pt = 20;
   const padding = 10;
   const linePadding = 25;
@@ -312,7 +314,6 @@ function App() {
                   {dBDiff[1]}dB
                 </text>
               </g>
-
               <g>
                 <defs>
                   <linearGradient id="Gradient2">
@@ -359,7 +360,6 @@ function App() {
                   />
                 </g>
               </g>
-
               <g>
                 <text
                   x="2000"
@@ -380,7 +380,6 @@ function App() {
                   width="400"
                 />
               </g>
-
               <g>
                 {AllData.map((item, i) => {
                   if (
@@ -457,7 +456,21 @@ function App() {
                         />
                       </g>
                     );
-                  } else if (item.name === "segment") {
+                  }
+                })}
+              </g>
+              <g>
+                {AllData.map((item, i) => {
+                  if (
+                    i === 0 ||
+                    testPadX2 + xScale2(item.start) * scaleSize > contentWidth
+                  ) {
+                    if (i !== 0) {
+                      testPadY2 += scoreHeight;
+                      testPadX2 -= contentWidth;
+                    }
+                  }
+                  if (item.name === "segment") {
                     musicKey = item.key;
                     return item.pitches.map((p, j) => {
                       return (
@@ -467,13 +480,13 @@ function App() {
                             cx={
                               padding +
                               xScale2(item.start) * scaleSize +
-                              testPadX
+                              testPadX2
                             }
-                            cy={pt + linePadding * j + testPadY}
+                            cy={pt + linePadding * j + testPadY2}
                             r={dBScale(item.loudness_max)}
                             //fill={coloJudge(item.key, item.pitches[11 - j])}
                             fill={scale(item.pitches[11 - j])}
-                            opacity="0.65"
+                            opacity="0.75"
                             //style={{ transitionDuration: "1s" }}
                           />
                         </g>
