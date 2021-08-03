@@ -132,7 +132,6 @@ function App() {
       .range(["#FFFFFF", hue[key]]);
 
     const color = colorScale(pitch);
-    //console.log(color, key, pitch);
     return color;
   }
 
@@ -140,17 +139,12 @@ function App() {
   const margin = {
     left: 100,
     right: 10,
-    top: 50,
+    top: 0,
     bottom: 0,
   };
-  const contentWidth = 3000;
+  //曲の長さによって変えないとダメそう
+  const contentWidth = 4000;
   const contentHeight = 250;
-
-  const xScale = d3
-    .scaleLinear()
-    .domain(d3.extent(bar, (item) => item.start))
-    .range([0, contentWidth])
-    .nice();
 
   const xScale2 = d3
     .scaleLinear()
@@ -160,10 +154,8 @@ function App() {
 
   const svgWidth = margin.left + margin.right + contentWidth;
   const svgHeight = margin.top + margin.bottom + contentHeight;
-  const len = 0.3;
   //これも何かしらの計算で出した方がいい
   const scaleSize = 8;
-  const len2 = 15;
 
   let w_min = 100000;
   for (let i = 1; i < data.length; i++) {
@@ -182,7 +174,9 @@ function App() {
   }
   //console.log(testArray);
 
-  const testPad = 0;
+  let testPadY = 0;
+  let testPadX = 0;
+  const scoreWidth = 3000;
 
   const pt = 20;
   const padding = 10;
@@ -194,6 +188,21 @@ function App() {
     .range([2.5, linePadding])
     .nice();
 
+  const AllData = [];
+  for (const d of data) {
+    d.name = "segment";
+    AllData.push(d);
+  }
+  for (const d of bar) {
+    d.name = "bar";
+    AllData.push(d);
+  }
+  for (const d of beats) {
+    d.name = "beat";
+    AllData.push(d);
+  }
+  AllData.sort((a, b) => a.start - b.start);
+  console.log(AllData);
   return (
     <div /*style={{ width: "100%" }}*/>
       <select
@@ -204,601 +213,136 @@ function App() {
         <option value="baby_got_bless_you.json">Baby god bless you</option>
         <option value="for_tomorrrow.json">For Tomorrow</option>
       </select>
-      <div style={{ width: "100%", overflowX: "scroll" }}>
+
+      <div style={{ width: "100%", height: "90vh" }}>
         <svg
-          width={svgWidth * 6}
-          height={svgHeight}
+          width={svgWidth * 4}
+          height={3000}
           viewBox={`${-margin.left} ${-margin.top} ${
-            svgWidth * 6
+            svgWidth * 10
           } ${svgHeight}`}
         >
-          <g /*transform={`scale(5,5)`}*/>
-            {[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11].map((idx) => {
-              return (
-                <line
-                  x1={padding}
-                  y1={pt + linePadding * idx}
-                  x2={svgWidth * 6}
-                  y2={10 + linePadding * idx}
-                  strokeWidth="0.1px"
-                  stroke="black"
-                />
-              );
-            })}
-            {beats.map((item, id) => {
-              return (
-                <g>
-                  <line
-                    x1={xScale2(item.start) * scaleSize}
-                    //y1={-pt}
-                    y1={pt / 2}
-                    x2={xScale2(item.start) * scaleSize}
-                    //y2={pt * 2 + linePadding * 12}
-                    y2={pt + pt / 2 + linePadding * 11}
-                    strokeWidth="0.3px"
-                    stroke="black"
-                  />
-                </g>
-              );
-            })}
-            {bar.map((item, id) => {
-              return (
-                <g>
-                  <line
-                    x1={xScale2(item.start) * scaleSize}
-                    y1={-pt / 2}
-                    x2={xScale2(item.start) * scaleSize}
-                    y2={(pt * 3) / 2 + linePadding * 12}
-                    strokeWidth="1px"
-                    //stroke="black"
-                    stroke="orange"
-                  />
-                </g>
-              );
-            })}
-            {data.map((item, i) => {
-              return item.pitches.map((p, j) => {
-                return (
-                  <g>
-                    <circle
-                      //key={item.start}
-                      cx={padding + xScale2(item.start) * scaleSize}
-                      cy={pt + linePadding * j}
-                      r={dBScale(item.loudness_max)}
-                      //fill={coloJudge(item.key, item.pitches[11 - j])}
-                      fill={scale(item.pitches[11 - j])}
-                      opacity="0.75"
-                      //style={{ transitionDuration: "1s" }}
-                    />
-                  </g>
-                );
-              });
-            })}
-          </g>
-        </svg>
-      </div>
-
-      <div style={{ width: "100%" }}>
-        <svg
-          width={svgWidth * 3}
-          height={svgHeight}
-          viewBox={`${-margin.left} ${-margin.top} ${
-            svgWidth * 6
-          } ${svgHeight}`}
-        >
-          <g>
-            {[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11].map((idx) => {
-              return (
-                <line
-                  x1={padding}
-                  y1={pt + linePadding * idx}
-                  x2={svgWidth * 6}
-                  y2={10 + linePadding * idx}
-                  strokeWidth="0.1px"
-                  stroke="black"
-                />
-              );
-            })}
-            {beats.map((item, id) => {
-              return (
-                <g>
-                  <line
-                    x1={xScale2(item.start) * scaleSize}
-                    //y1={-pt}
-                    y1={pt / 2}
-                    x2={xScale2(item.start) * scaleSize}
-                    //y2={pt * 2 + linePadding * 12}
-                    y2={pt + pt / 2 + linePadding * 11}
-                    strokeWidth="0.3px"
-                    stroke="black"
-                  />
-                </g>
-              );
-            })}
-            {bar.map((item, id) => {
-              return (
-                <g>
-                  <line
-                    x1={xScale2(item.start) * scaleSize}
-                    y1={-pt / 2}
-                    x2={xScale2(item.start) * scaleSize}
-                    y2={(pt * 3) / 2 + linePadding * 12}
-                    strokeWidth="1px"
-                    //stroke="black"
-                    stroke="orange"
-                  />
-                </g>
-              );
-            })}
-            {data.map((item, i) => {
-              return item.pitches.map((p, j) => {
-                return (
-                  <g>
-                    <circle
-                      //key={item.start}
-                      cx={padding + xScale2(item.start) * scaleSize}
-                      cy={pt + linePadding * j}
-                      r={dBScale(item.loudness_max)}
-                      //fill={coloJudge(item.key, item.pitches[11 - j])}
-                      fill={scale(item.pitches[11 - j])}
-                      opacity="0.75"
-                      //style={{ transitionDuration: "1s" }}
-                    />
-                  </g>
-                );
-              });
-            })}
-          </g>
-        </svg>
-      </div>
-
-      {/*<div style={{ width: "100%", overflowY: "scroll" }}>
-        <svg width="45000" height="200">
-          <g>
-            {[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11].map((i) => {
-              return data.map((d, j) => {
-                // console.log(d.start, xScale2(d.start));
-                let w = len;
-                if (j !== 0) {
-                  // w = xScale2(data[j].start - data[j - 1].start);
-                }
-                return (
-                  <g>
-                    <g transform={`scale(${scaleSize}, ${scaleSize}) `}>
-                      <rect
-                        // x={len * j}
-                        x={xScale2(d.start)}
-                        y={1.5 + len * i}
-                        //width={len}
-                        width={w}
-                        height={len}
-                        //fill={scale(d.pitches[i])}
-                        //fill={d3.interpolateTurbo(d.pitches[i])}
-                        fill={scale(d.pitches[11 - i])}
-                        // key={i * segment.pitches.length + j}
-                      />
-                    </g>
-                    {j !== 0 ? (
-                      <g transform={`scale(${scaleSize}, 1)translate(0, 100) `}>
-                        <line
-                          x1={xScale2(data[j - 1].start)}
-                          y1={-1 * data[j - 1].loudness_max}
-                          x2={xScale2(data[j].start)}
-                          y2={-1 * data[j].loudness_max}
-                          //stroke={coloJudge(d.key, 1)}
-                          strokeWidth="0.1px"
-                          stroke="black"
-                        />
-                        <line
-                          x1={xScale2(data[j - 1].start)}
-                          y1={60}
-                          x2={xScale2(data[j].start)}
-                          y2={60}
-                          strokeWidth="0.1px"
-                          stroke="black"
-                        />
-                        <rect
-                          x={xScale2(data[j - 1].start)}
-                          y={len2 * 0.85 * i}
-                          width={
-                            xScale2(data[j].start) - xScale2(data[j - 1].start)
-                          }
-                          height={len2 * 0.85}
-                          //fill={coloJudge(d.key, d.pitches[i])}
-                          //fill={d3.interpolateTurbo(d.pitches[i])}
-                          fill={coloJudge(d.key, 1)}
-                          fillOpacity={0.1}
-                          key={i * d.length + j}
-                        />
-                      </g>
-                    ) : (
-                      []
-                    )}
-                  </g>
-                );
-              });
-            })}
-          </g>
-          <g transform={`translate(0, 70)`}>
-            {beats.map((item, id) => {
-              // console.log(id, item, xScale(item.start));
-              return (
-                <g >
-                  <circle
-                    key={item.key}
-                    cx={xScale2(item.start) * scaleSize}
-                    cy={20}
-                    //cy={yScale(item[yProperty])}
-                    
-                    r="2"
-                    //fill="skyBlue"
-                    stroke="black"
-                    style={{ transitionDuration: "1s" }}
-                  />
-                </g>
-              );
-            })}
-            {bar.map((item, id) => {
-              // console.log(id, item, xScale(item.start));
-              return (
-                <g >
-                  <circle
-                    key={item.key}
-                    cx={xScale2(item.start) * scaleSize}
-                    cy={20}
-                    //cy={yScale(item[yProperty])}
-                    
-                    r="4"
-                    stroke="black" //{colorScale(item.species)}
-                    style={{ transitionDuration: "1s" }}
-                  />
-                </g>
-              );
-            })}
-          </g>
-          <g>
-            {testArray.map((d, i) => {
-              return (
-                <rect
-                  // x={len * j}
-                  x={6 * i}
-                  y={0}
-                  width={6}
-                  height={6}
-                  //fill={scale(d.pitches[i])}
-                  //fill={d3.interpolateTurbo(d.pitches[i])}
-                  //fill={scale(d.pitches[11 - i])}
-                  fill="gray"
-                  // key={i * segment.pitches.length + j}
-                />
-              );
-            })}
-          </g>
-        </svg>
-      </div>
-
-      <div style={{ width: "100%", overflowY: "scroll" }}>
-        <svg width={svgWidth} height="300">
-          <g transform={`scale(${scaleSize},1) `}>
-            {[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11].map((i) => {
-              return data.map((d, j) => {
-                // console.log(d.start, xScale2(d.start));
-                let w = 10;
-                if (j !== data.length - 1) {
-                  w = xScale2(data[j + 1].start - data[j].start);
-                  // console.log(w);
-                }
-                return (
-                  <g>
-                    <g >
-                      <rect
-                        // x={len * j}
-                        x={xScale2(d.start)}
-                        y={1.5 + 15 * i}
-                        //width={len}
-                        width={w}
-                        height={15}
-                        //fill={scale(d.pitches[i])}
-                        //fill={d3.interpolateTurbo(d.pitches[i])}
-                        fill={scale(d.pitches[11 - i])}
-                        // key={i * segment.pitches.length + j}
-                      />
-                    </g>
-                    {j !== 0 ? (
-                      <g transform={`translate(0, 200) `}>
-                        <line
-                          x1={xScale2(data[j - 1].start)}
-                          y1={-1 * data[j - 1].loudness_max}
-                          x2={xScale2(data[j].start)}
-                          y2={-1 * data[j].loudness_max}
-                          //stroke={coloJudge(d.key, 1)}
-                          strokeWidth="0.1px"
-                          stroke="black"
-                        />
-                        <line
-                          x1={xScale2(data[j - 1].start)}
-                          y1={60}
-                          x2={xScale2(data[j].start)}
-                          y2={60}
-                          strokeWidth="0.1px"
-                          stroke="black"
-                        />
-                        <rect
-                          x={xScale2(data[j - 1].start)}
-                          y={len2 * 0.85 * i}
-                          width={
-                            xScale2(data[j].start) - xScale2(data[j - 1].start)
-                          }
-                          height={len2 * 0.85}
-                          //fill={coloJudge(d.key, d.pitches[i])}
-                          //fill={d3.interpolateTurbo(d.pitches[i])}
-                          fill={coloJudge(d.key, 1)}
-                          fillOpacity={0.1}
-                          key={i * d.length + j}
-                        />
-                      </g>
-                    ) : (
-                      []
-                    )}
-                  </g>
-                );
-              });
-            })}
-          </g>
-          <g transform={`translate(0, 200)`}>
-            {beats.map((item, id) => {
-              // console.log(id, item, xScale(item.start));
-              return (
-                <g>
-                  <circle
-                    key={item.key}
-                    cx={xScale2(item.start) * scaleSize}
-                    cy={0}
-                    //cy={yScale(item[yProperty])}
-
-                    r="2"
-                    //fill="skyBlue"
-                    stroke="black"
-                    style={{ transitionDuration: "1s" }}
-                  />
-                </g>
-              );
-            })}
-            {bar.map((item, id) => {
-              // console.log(id, item, xScale(item.start));
-              return (
-                <g>
-                  <circle
-                    key={item.key}
-                    cx={xScale2(item.start) * scaleSize}
-                    cy={0}
-                    //cy={yScale(item[yProperty])}
-
-                    r="4"
-                    stroke="black" //{colorScale(item.species)}
-                    style={{ transitionDuration: "1s" }}
-                  />
-                </g>
-              );
-            })}
-          </g>
-          {/*<g>
-          {testArray.map((d, i) => {
+          {[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11].map((idx) => {
             return (
-              <rect
-                // x={len * j}
-                x={6 * i}
-                y={0}
-                width={6}
-                height={6}
-                //fill={scale(d.pitches[i])}
-                //fill={d3.interpolateTurbo(d.pitches[i])}
-                //fill={scale(d.pitches[11 - i])}
-                fill="gray"
-                // key={i * segment.pitches.length + j}
-              />
+              <g>
+                <line
+                  x1={padding}
+                  y1={pt + linePadding * idx}
+                  x2={scoreWidth}
+                  y2={10 + linePadding * idx}
+                  strokeWidth="0.1px"
+                  stroke="black"
+                />
+                {idx === 0 ? (
+                  <line
+                    x1={0}
+                    y1={pt + testPadY}
+                    x2={0}
+                    y2={pt / 2 + linePadding * 12 + testPadY}
+                    strokeWidth="0.3px"
+                    stroke="black"
+                  />
+                ) : (
+                  []
+                )}
+              </g>
             );
           })}
-        </g>
+          <g>
+            {AllData.map((item) => {
+              if (testPadX + xScale2(item.start) * scaleSize > 3000) {
+                testPadY += 250;
+                testPadX -= 3000;
+                return [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11].map((idx) => {
+                  return (
+                    <g>
+                      <line
+                        x1={0}
+                        y1={pt + linePadding * idx + testPadY}
+                        x2={scoreWidth}
+                        y2={10 + linePadding * idx + testPadY}
+                        strokeWidth="0.1px"
+                        stroke="black"
+                      />
+                      {idx === 0 ? (
+                        <g>
+                          <line
+                            x1={0}
+                            y1={pt + testPadY}
+                            x2={0}
+                            y2={pt / 2 + linePadding * 12 + testPadY}
+                            strokeWidth="0.3px"
+                            stroke="black"
+                          />
+                          <line
+                            x1={scoreWidth}
+                            y1={pt / 2 + testPadY}
+                            x2={scoreWidth}
+                            y2={pt / 2 + linePadding * 11 + testPadY}
+                            strokeWidth="0.3px"
+                            stroke="black"
+                          />
+                        </g>
+                      ) : (
+                        []
+                      )}
+                    </g>
+                  );
+                });
+              }
+              if (item.name === "beat") {
+                return (
+                  <g>
+                    <line
+                      x1={xScale2(item.start) * scaleSize + testPadX}
+                      //y1={-pt}
+                      y1={pt / 2 + testPadY}
+                      x2={xScale2(item.start) * scaleSize + testPadX}
+                      //y2={pt * 2 + linePadding * 12}
+                      y2={pt + pt / 2 + linePadding * 11 + testPadY}
+                      strokeWidth="0.3px"
+                      stroke="black"
+                    />
+                  </g>
+                );
+              } else if (item.name === "bar") {
+                return (
+                  <g>
+                    <line
+                      x1={xScale2(item.start) * scaleSize + testPadX}
+                      y1={-pt / 2 + testPadY}
+                      x2={xScale2(item.start) * scaleSize + testPadX}
+                      y2={(pt * 3) / 2 + linePadding * 12 + testPadY}
+                      strokeWidth="1px"
+                      //stroke="black"
+                      stroke="orange"
+                    />
+                  </g>
+                );
+              } else if (item.name === "segment") {
+                return item.pitches.map((p, j) => {
+                  return (
+                    <g>
+                      <circle
+                        //key={item.start}
+                        cx={
+                          padding + xScale2(item.start) * scaleSize + testPadX
+                        }
+                        cy={pt + linePadding * j + testPadY}
+                        r={dBScale(item.loudness_max)}
+                        //fill={coloJudge(item.key, item.pitches[11 - j])}
+                        fill={scale(item.pitches[11 - j])}
+                        opacity="0.75"
+                        //style={{ transitionDuration: "1s" }}
+                      />
+                    </g>
+                  );
+                });
+              }
+            })}
+          </g>
         </svg>
       </div>
-
-      <div style={{ width: "100%", marginTop: "25px" }}>
-        {[200, 400, 600, 800, Math.min(data.length, 10000)].map((time) => {
-          return (
-            <svg
-              viewBox={`${-margin.left} ${-margin.top} ${svgWidth} ${svgHeight}`}
-            >
-              <HorizontalAxis
-                len={len2}
-                term={data.slice(time - 200, time)}
-                name={""}
-                w={1000}
-              />
-              {[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11].map((i) => {
-                return data.slice(time - 200, time).map((d, j) => {
-                  return (
-                    <g>
-                      {j !== 0 ? (
-                        <g transform={`translate(0, 200) `}>
-                          <line
-                            x1={len2 * (j - 1)}
-                            y1={
-                              -1 *
-                              data.slice(time - 200, time)[j - 1].loudness_max
-                            }
-                            x2={len2 * j}
-                            y2={-1 * d.loudness_max}
-                            //stroke={coloJudge(d.key, 1)}
-                            stroke="black"
-                          />
-                          <line
-                            x1={len2 * (j - 1)}
-                            y1={60}
-                            x2={len2 * j}
-                            y2={60}
-                            strokeWidth="0.5px"
-                            stroke="black"
-                          />
-                        </g>
-                      ) : (
-                        []
-                      )}
-                      <g transform={`translate(0, 200) `}>
-                        <rect
-                          x={len2 * j}
-                          y={-15 + len2 * 0.85 * i}
-                          width={len2}
-                          height={len2 * 0.85}
-                          //fill={coloJudge(d.key, d.pitches[i])}
-                          //fill={d3.interpolateTurbo(d.pitches[i])}
-                          fill={coloJudge(d.key, 1)}
-                          fillOpacity={0.1}
-                          key={i * data.slice(time - 200, time).length + j}
-                        />
-                      </g>
-                      <rect
-                        x={len2 * j}
-                        y={len2 * i}
-                        width={len2}
-                        height={len2}
-                        //fill={coloJudge(d.key, d.pitches[i])}
-                        //fill={d3.interpolateTurbo(d.pitches[i])}
-                        fill={scale(d.pitches[11 - i])}
-                        key={i * data.slice(time - 200, time).length + j}
-                      />
-                    </g>
-                  );
-                });
-              })}
-            </svg>
-          );
-        })}
-      </div>
-
-      <div style={{ width: "100%", marginTop: "50px" }}>
-        {[200, 400, 600, 800, Math.min(data.length, 10000)].map((time, t) => {
-          return (
-            <svg
-              viewBox={`${-margin.left} ${-margin.top} ${svgWidth} ${svgHeight}`}
-            >
-              
-              {[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11].map((i) => {
-                return data.slice(time - 200, time).map((d, j) => {
-                  let w = 10;
-                  if (j !== 200 - 1) {
-                    w = xScale2(
-                      data.slice(time - 200, time)[j + 1].start - d.start
-                    );
-                  }
-
-                  let startDiff = 0;
-                  if (t != 0) {
-                    startDiff = xScale2(data.slice(time - 200, time)[0].start);
-                  }
-                  return (
-                    <g transform={`scale(3, 1)`}>
-                      {j !== 0 ? (
-                        <g transform={`translate(0, 200) `}>
-                          <line
-                            x1={
-                              -startDiff +
-                              xScale2(data.slice(time - 200, time)[j - 1].start)
-                            }
-                            y1={
-                              -1 *
-                              data.slice(time - 200, time)[j - 1].loudness_max
-                            }
-                            x2={-startDiff + xScale2(d.start)}
-                            y2={-1 * d.loudness_max}
-                            //stroke={coloJudge(d.key, 1)}
-                            stroke="black"
-                          />
-                          <line
-                            x1={
-                              -startDiff +
-                              xScale2(data.slice(time - 200, time)[j - 1].start)
-                            }
-                            y1={60}
-                            x2={-startDiff + xScale2(d.start)}
-                            y2={60}
-                            strokeWidth="0.5px"
-                            stroke="black"
-                          />
-                        </g>
-                      ) : (
-                        []
-                      )}
-                      <g transform={`translate(0, 200) `}>
-                        <rect
-                          x={-startDiff + xScale2(d.start)}
-                          y={len2 * i}
-                          //width={len2}
-                          width={w}
-                          height={len2}
-                          //fill={coloJudge(d.key, d.pitches[i])}
-                          //fill={d3.interpolateTurbo(d.pitches[i])}
-                          fill={coloJudge(d.key, 1)}
-                          fillOpacity={0.1}
-                          key={i * data.slice(time - 200, time).length + j}
-                        />
-                      </g>
-                      <rect
-                        x={-startDiff + xScale2(d.start)}
-                        y={len2 * i}
-                        //width={len2}
-                        width={w}
-                        height={len2}
-                        //fill={coloJudge(d.key, d.pitches[i])}
-                        //fill={d3.interpolateTurbo(d.pitches[i])}
-                        fill={scale(d.pitches[11 - i])}
-                        key={i * data.slice(time - 200, time).length + j}
-                      />
-                    </g>
-                  );
-                });
-              })}
-              <g >
-                {beats.map((item, id) => {
-                  // console.log(id, item, xScale(item.start));
-                  return (
-                    <g>
-                      <circle
-                        key={item.key}
-                        cx={xScale2(item.start) * scaleSize}
-                        cy={0}
-                        //cy={yScale(item[yProperty])}
-
-                        r="2"
-                        //fill="skyBlue"
-                        stroke="black"
-                        style={{ transitionDuration: "1s" }}
-                      />
-                    </g>
-                  );
-                })}
-                {bar.map((item, id) => {
-                  // console.log(id, item, xScale(item.start));
-                  return (
-                    <g>
-                      <circle
-                        key={item.key}
-                        cx={xScale2(item.start) * scaleSize}
-                        cy={0}
-                        //cy={yScale(item[yProperty])}
-
-                        r="4"
-                        stroke="black" //{colorScale(item.species)}
-                        style={{ transitionDuration: "1s" }}
-                      />
-                    </g>
-                  );
-                })}
-              </g>
-              </svg>
-          );
-        })}
-      </div>*/}
     </div>
   );
 }
