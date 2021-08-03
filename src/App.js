@@ -1,9 +1,6 @@
 import { useEffect, useState } from "react";
 import * as d3 from "d3";
-import img from "./icon.png";
-import request from "request";
 import "./style.css";
-import colorLegend from "./components/colorLegend";
 import pianoImg from "./images/piano.png";
 
 function HorizontalAxis({ len, term, name, w }) {
@@ -390,18 +387,63 @@ function App() {
                       testPadY += scoreHeight;
                       testPadX -= contentWidth;
                     }
-                    return [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11].map((idx) => {
+                    return [
+                      [0, 0],
+                      [1, 1],
+                      [2, 0],
+                      [3, 1],
+                      [4, 0],
+                      [5, 1],
+                      [6, 0],
+                      [7, 0],
+                      [8, 1],
+                      [9, 0],
+                      [10, 1],
+                      [11, 0],
+                    ].map((idx) => {
                       return (
                         <g>
+                          {/**五線 */}
                           <line
                             x1={0}
-                            y1={pt + linePadding * idx + testPadY}
+                            y1={pt + linePadding * idx[0] + testPadY}
                             x2={contentWidth}
-                            y2={10 + linePadding * idx + testPadY}
+                            y2={10 + linePadding * idx[0] + testPadY}
                             strokeWidth="0.1px"
                             stroke="black"
                           />
-                          {idx === 0 ? (
+                          {/**鍵盤 */}
+                          <g transform={`translate(0, -2.5)`}>
+                            {idx[1] === 0 ? (
+                              <rect
+                                x={-linePadding * 3.5}
+                                y={pt / 2 + linePadding * idx[0] + testPadY}
+                                width={linePadding * 3}
+                                height={linePadding * 1.25}
+                                fill="#E8E8E8"
+                              />
+                            ) : (
+                              <g>
+                                <rect
+                                  x={-linePadding * 3.5}
+                                  y={pt / 2 + linePadding * idx[0] + testPadY}
+                                  width={linePadding * 2}
+                                  height={linePadding}
+                                  // stroke="black"
+                                  fill="black"
+                                />
+                                <rect
+                                  x={-linePadding * 1.5}
+                                  y={pt / 2 + linePadding * idx[0] + testPadY}
+                                  width={linePadding}
+                                  height={linePadding}
+                                  fill="#E8E8E8"
+                                />
+                              </g>
+                            )}
+                          </g>
+                          {/**終始線 */}
+                          {idx[0] === 0 ? (
                             <g>
                               <line
                                 x1={0}
@@ -486,7 +528,7 @@ function App() {
                             r={dBScale(item.loudness_max)}
                             //fill={coloJudge(item.key, item.pitches[11 - j])}
                             fill={scale(item.pitches[11 - j])}
-                            opacity="0.75"
+                            opacity="0.85"
                             //style={{ transitionDuration: "1s" }}
                           />
                         </g>
