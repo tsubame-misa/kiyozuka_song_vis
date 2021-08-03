@@ -232,7 +232,7 @@ function App() {
 
       {/*} <div style={{ width: "100%", height: "90vh" }}>*/}
       <div style={{ width: "100%", height: "90vh" }}>
-        <svg viewBox={`${-margin.left} ${-margin.top} ${svgWidth} ${60000}`}>
+        <svg viewBox={`${-margin.left} ${-margin.top} ${svgWidth} ${7000}`}>
           <g>
             {AllData.map((item, i) => {
               if (
