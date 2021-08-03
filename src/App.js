@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import * as d3 from "d3";
 import "./style.css";
-import pianoImg from "./images/piano.png";
+import pianoImg from "./images/piano2.png";
 
 function HorizontalAxis({ len, term, name, w }) {
   return (
@@ -355,6 +355,26 @@ function App() {
                     height="50"
                     fill="url('#Gradient2')"
                   />
+                  <text
+                    x="1275"
+                    y={-margin.top / 2}
+                    textAnchor="middle"
+                    dominantBaseline="central"
+                    fontSize="60"
+                    style={{ userSelect: "none" }}
+                  >
+                    0
+                  </text>
+                  <text
+                    x="1825"
+                    y={-margin.top / 2}
+                    textAnchor="middle"
+                    dominantBaseline="central"
+                    fontSize="60"
+                    style={{ userSelect: "none" }}
+                  >
+                    1
+                  </text>
                 </g>
               </g>
               <g>
@@ -366,15 +386,15 @@ function App() {
                   fontSize="60"
                   style={{ userSelect: "none" }}
                 >
-                  出現確率
+                  調
                 </text>
                 &ensp;
                 <image
                   href={pianoImg}
-                  x="2150"
+                  x="2100"
                   y={-margin.top * 1.25}
-                  height="400"
-                  width="400"
+                  height="500"
+                  width="450"
                 />
               </g>
               <g>
