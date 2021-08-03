@@ -151,12 +151,28 @@ function App() {
     return color;
   }
 
+  const AllData = [];
+  for (const d of data) {
+    d.name = "segment";
+    AllData.push(d);
+  }
+  for (const d of bar) {
+    d.name = "bar";
+    AllData.push(d);
+  }
+  for (const d of beats) {
+    d.name = "beat";
+    AllData.push(d);
+  }
+  AllData.sort((a, b) => a.start - b.start);
+  console.log(AllData);
+
   var scale = d3.scaleLinear().domain([0, 1]).range(["#FFFFFF", "#0C060F"]);
   const margin = {
     left: 100,
     right: 100,
     top: 100,
-    bottom: 0,
+    bottom: 100,
   };
   //曲の長さによって変えないとダメそう
   const contentWidth = 4500;
@@ -168,8 +184,6 @@ function App() {
     .range([0, contentWidth])
     .nice();
 
-  const svgWidth = margin.left + margin.right + contentWidth;
-  const svgHeight = margin.top + margin.bottom + contentHeight;
   //これも何かしらの計算で出した方がいい
   const scaleSize = 15;
 
@@ -192,11 +206,20 @@ function App() {
   let musicKey = data[0]?.key;
   let testPadY = 0;
   let testPadX = 0;
-
   const pt = 20;
   const padding = 10;
   const linePadding = 25;
   const scoreHeight = 450;
+
+  const svgWidth = margin.left + margin.right + contentWidth;
+  const svgHeight =
+    margin.top +
+    margin.bottom +
+    contentHeight +
+    Math.ceil(
+      xScale2((AllData[AllData.length - 1]?.start * scaleSize) / contentWidth)
+    ) *
+      scoreHeight;
 
   const dBScale = d3
     .scaleLinear()
@@ -204,21 +227,6 @@ function App() {
     .range([2.5, linePadding - 7])
     .nice();
 
-  const AllData = [];
-  for (const d of data) {
-    d.name = "segment";
-    AllData.push(d);
-  }
-  for (const d of bar) {
-    d.name = "bar";
-    AllData.push(d);
-  }
-  for (const d of beats) {
-    d.name = "beat";
-    AllData.push(d);
-  }
-  AllData.sort((a, b) => a.start - b.start);
-  console.log(AllData);
   return (
     <div /*style={{ width: "100%" }}*/>
       <select
@@ -232,7 +240,9 @@ function App() {
 
       {/*} <div style={{ width: "100%", height: "90vh" }}>*/}
       <div style={{ width: "100%", height: "90vh" }}>
-        <svg viewBox={`${-margin.left} ${-margin.top} ${svgWidth} ${7000}`}>
+        <svg
+          viewBox={`${-margin.left} ${-margin.top} ${svgWidth} ${svgHeight}`}
+        >
           <g>
             {AllData.map((item, i) => {
               if (
