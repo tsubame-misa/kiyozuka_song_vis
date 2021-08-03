@@ -138,13 +138,13 @@ function App() {
 
   var scale = d3.scaleLinear().domain([0, 1]).range(["#FFFFFF", "#0C060F"]);
   const margin = {
-    left: 10,
-    right: 30,
-    top: 45,
-    bottom: 10,
+    left: 100,
+    right: 10,
+    top: 50,
+    bottom: 0,
   };
   const contentWidth = 3000;
-  const contentHeight = 300;
+  const contentHeight = 250;
 
   const xScale = d3
     .scaleLinear()
@@ -156,13 +156,6 @@ function App() {
     .scaleLinear()
     .domain(d3.extent(data, (item) => item.start))
     .range([0, contentWidth])
-    .nice();
-
-  //loudness_max
-  const dBScale = d3
-    .scaleLinear()
-    .domain(d3.extent(data, (item) => item.loudness_max))
-    .range([5, 12])
     .nice();
 
   const svgWidth = margin.left + margin.right + contentWidth;
@@ -188,6 +181,16 @@ function App() {
   }
   //console.log(testArray);
 
+  const pt = 20;
+  const padding = 10;
+  const linePadding = 15;
+
+  const dBScale = d3
+    .scaleLinear()
+    .domain(d3.extent(data, (item) => item.loudness_max))
+    .range([5, linePadding])
+    .nice();
+
   return (
     <div /*style={{ width: "100%" }}*/>
       <select
@@ -198,67 +201,79 @@ function App() {
         <option value="baby_got_bless_you.json">Baby god bless you</option>
         <option value="for_tomorrrow.json">For Tomorrow</option>
       </select>
-
-      <svg width={svgWidth * 6} height={svgHeight}>
-        <g>
-          {[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11].map((idx) => {
-            return (
-              <line
-                x1={10}
-                y1={10 + 12 * idx}
-                x2={svgWidth * 6}
-                y2={10 + 12 * idx}
-                strokeWidth="0.1px"
-                stroke="black"
-              />
-            );
-          })}
-          {bar.map((item, id) => {
-            return (
-              <g>
-                <line
-                  x1={xScale2(item.start) * 5}
-                  y1={0}
-                  x2={xScale2(item.start) * 5}
-                  y2={10 + 12 * 12}
-                  strokeWidth="0.5px"
-                  stroke="black"
-                />
-              </g>
-            );
-          })}
-          {beats.map((item, id) => {
-            return (
-              <g>
-                <line
-                  x1={xScale2(item.start) * 5}
-                  y1={0}
-                  x2={xScale2(item.start) * 5}
-                  y2={10 + 12 * 12}
-                  strokeWidth="0.3px"
-                  stroke="black"
-                />
-              </g>
-            );
-          })}
-          {data.map((item, i) => {
-            return item.pitches.map((p, j) => {
+      <div style={{ width: "100%", overflowX: "scroll" }}>
+        <svg
+          width={svgWidth * 6}
+          height={svgHeight}
+          viewBox={`${-margin.left} ${-margin.top} ${
+            svgWidth * 6
+          } ${svgHeight}`}
+        >
+          <g /*transform={`scale(5,5)`}*/>
+            {[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11].map((idx) => {
               return (
-                <circle
-                  //key={item.start}
-                  cx={10 + xScale2(item.start) * 5}
-                  cy={10 + 12 * j}
-                  r={dBScale(item.loudness_max)}
-                  fill={coloJudge(item.key, item.pitches[11 - j])}
-                  //fill={scale(item.pitches[11 - j])}
-                  opacity="0.75"
-                  //style={{ transitionDuration: "1s" }}
+                <line
+                  x1={padding}
+                  y1={pt + linePadding * idx}
+                  x2={svgWidth * 6}
+                  y2={10 + linePadding * idx}
+                  strokeWidth="0.1px"
+                  stroke="black"
                 />
               );
-            });
-          })}
-        </g>
-      </svg>
+            })}
+            {beats.map((item, id) => {
+              return (
+                <g>
+                  <line
+                    x1={xScale2(item.start) * 5}
+                    //y1={-pt}
+                    y1={pt / 2}
+                    x2={xScale2(item.start) * 5}
+                    //y2={pt * 2 + linePadding * 12}
+                    y2={pt + pt / 2 + linePadding * 11}
+                    strokeWidth="0.3px"
+                    stroke="black"
+                  />
+                </g>
+              );
+            })}
+            {bar.map((item, id) => {
+              return (
+                <g>
+                  <line
+                    x1={xScale2(item.start) * 5}
+                    y1={-pt / 2}
+                    x2={xScale2(item.start) * 5}
+                    y2={(pt * 3) / 2 + linePadding * 12}
+                    strokeWidth="1px"
+                    //stroke="black"
+                    stroke="orange"
+                  />
+                </g>
+              );
+            })}
+            {data.map((item, i) => {
+              return item.pitches.map((p, j) => {
+                return (
+                  <g>
+                    <circle
+                      //key={item.start}
+                      cx={padding + xScale2(item.start) * 5}
+                      cy={pt + linePadding * j}
+                      r={dBScale(item.loudness_max)}
+                      //fill={coloJudge(item.key, item.pitches[11 - j])}
+                      fill={scale(item.pitches[11 - j])}
+                      opacity="0.75"
+                      //style={{ transitionDuration: "1s" }}
+                    />
+                  </g>
+                );
+              });
+            })}
+          </g>
+        </svg>
+      </div>
 
       {/*<div style={{ width: "100%", overflowY: "scroll" }}>
         <svg width="45000" height="200">
