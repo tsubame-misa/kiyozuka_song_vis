@@ -498,6 +498,8 @@ function App() {
                         />
                       </g>
                     );
+                  } else if (item.name === "segment") {
+                    musicKey = item.key;
                   }
                 })}
               </g>
