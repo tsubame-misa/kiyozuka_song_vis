@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import * as d3 from "d3";
 import img from "./icon.png";
 import request from "request";
+import "./style.css";
 
 function HorizontalAxis({ len, term, name, w }) {
   return (
@@ -154,7 +155,7 @@ function App() {
   const margin = {
     left: 100,
     right: 100,
-    top: 0,
+    top: 100,
     bottom: 0,
   };
   //曲の長さによって変えないとダメそう
@@ -170,7 +171,7 @@ function App() {
   const svgWidth = margin.left + margin.right + contentWidth;
   const svgHeight = margin.top + margin.bottom + contentHeight;
   //これも何かしらの計算で出した方がいい
-  const scaleSize = 8;
+  const scaleSize = 15;
 
   let w_min = 100000;
   for (let i = 1; i < data.length; i++) {
@@ -194,12 +195,13 @@ function App() {
 
   const pt = 20;
   const padding = 10;
-  const linePadding = 15;
+  const linePadding = 25;
+  const scoreHeight = 450;
 
   const dBScale = d3
     .scaleLinear()
     .domain(d3.extent(data, (item) => item.loudness_max))
-    .range([2.5, linePadding + 3])
+    .range([2.5, linePadding - 7])
     .nice();
 
   const AllData = [];
@@ -229,110 +231,109 @@ function App() {
       </select>
 
       {/*} <div style={{ width: "100%", height: "90vh" }}>*/}
-      <svg
-        width={svgWidth * 0.3}
-        height={3000}
-        viewBox={`${-margin.left} ${-margin.top} ${svgWidth} ${svgHeight}`}
-      >
-        <g transform={`translate(${0},${-3000 * 1.5})`}>
-          {AllData.map((item, i) => {
-            if (
-              i === 0 ||
-              testPadX + xScale2(item.start) * scaleSize > contentWidth
-            ) {
-              if (i !== 0) {
-                testPadY += 300;
-                testPadX -= contentWidth;
+      <div style={{ width: "100%", height: "90vh" }}>
+        <svg viewBox={`${-margin.left} ${-margin.top} ${svgWidth} ${60000}`}>
+          <g>
+            {AllData.map((item, i) => {
+              if (
+                i === 0 ||
+                testPadX + xScale2(item.start) * scaleSize > contentWidth
+              ) {
+                if (i !== 0) {
+                  testPadY += scoreHeight;
+                  testPadX -= contentWidth;
+                }
+                return [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11].map((idx) => {
+                  return (
+                    <g>
+                      <line
+                        x1={0}
+                        y1={pt + linePadding * idx + testPadY}
+                        x2={contentWidth}
+                        y2={10 + linePadding * idx + testPadY}
+                        strokeWidth="0.1px"
+                        stroke="black"
+                      />
+                      {idx === 0 ? (
+                        <g>
+                          <line
+                            x1={0}
+                            y1={pt + testPadY}
+                            x2={0}
+                            y2={pt / 2 + linePadding * 12 + testPadY}
+                            strokeWidth="0.3px"
+                            stroke="black"
+                          />
+                          <line
+                            x1={contentWidth}
+                            y1={pt / 2 + testPadY}
+                            x2={contentWidth}
+                            y2={pt / 2 + linePadding * 11 + testPadY}
+                            strokeWidth="0.3px"
+                            stroke="black"
+                          />
+                        </g>
+                      ) : (
+                        []
+                      )}
+                    </g>
+                  );
+                });
               }
-              return [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11].map((idx) => {
+              if (item.name === "beat") {
                 return (
                   <g>
                     <line
-                      x1={0}
-                      y1={pt + linePadding * idx + testPadY}
-                      x2={contentWidth}
-                      y2={10 + linePadding * idx + testPadY}
-                      strokeWidth="0.1px"
-                      stroke="black"
+                      x1={xScale2(item.start) * scaleSize + testPadX}
+                      //y1={-pt}
+                      y1={pt / 2 + testPadY}
+                      x2={xScale2(item.start) * scaleSize + testPadX}
+                      //y2={pt * 2 + linePadding * 12}
+                      y2={pt + pt / 2 + linePadding * 11 + testPadY}
+                      strokeWidth="1.0px"
+                      stroke={coloJudge(musicKey, 1)}
                     />
-                    {idx === 0 ? (
-                      <g>
-                        <line
-                          x1={0}
-                          y1={pt + testPadY}
-                          x2={0}
-                          y2={pt / 2 + linePadding * 12 + testPadY}
-                          strokeWidth="0.3px"
-                          stroke="black"
-                        />
-                        <line
-                          x1={contentWidth}
-                          y1={pt / 2 + testPadY}
-                          x2={contentWidth}
-                          y2={pt / 2 + linePadding * 11 + testPadY}
-                          strokeWidth="0.3px"
-                          stroke="black"
-                        />
-                      </g>
-                    ) : (
-                      []
-                    )}
                   </g>
                 );
-              });
-            }
-            if (item.name === "beat") {
-              return (
-                <g>
-                  <line
-                    x1={xScale2(item.start) * scaleSize + testPadX}
-                    //y1={-pt}
-                    y1={pt / 2 + testPadY}
-                    x2={xScale2(item.start) * scaleSize + testPadX}
-                    //y2={pt * 2 + linePadding * 12}
-                    y2={pt + pt / 2 + linePadding * 11 + testPadY}
-                    strokeWidth="1.0px"
-                    stroke={coloJudge(musicKey, 1)}
-                  />
-                </g>
-              );
-            } else if (item.name === "bar") {
-              return (
-                <g>
-                  <line
-                    x1={xScale2(item.start) * scaleSize + testPadX}
-                    y1={-pt / 2 + testPadY}
-                    x2={xScale2(item.start) * scaleSize + testPadX}
-                    y2={(pt * 3) / 2 + linePadding * 12 + testPadY}
-                    strokeWidth="4px"
-                    //stroke="black"
-                    stroke={coloJudge(musicKey, 1)}
-                  />
-                </g>
-              );
-            } else if (item.name === "segment") {
-              musicKey = item.key;
-              return item.pitches.map((p, j) => {
+              } else if (item.name === "bar") {
                 return (
                   <g>
-                    <circle
-                      //key={item.start}
-                      cx={padding + xScale2(item.start) * scaleSize + testPadX}
-                      cy={pt + linePadding * j + testPadY}
-                      r={dBScale(item.loudness_max)}
-                      //fill={coloJudge(item.key, item.pitches[11 - j])}
-                      fill={scale(item.pitches[11 - j])}
-                      opacity="0.85"
-                      //style={{ transitionDuration: "1s" }}
+                    <line
+                      x1={xScale2(item.start) * scaleSize + testPadX}
+                      y1={-pt / 2 + testPadY}
+                      x2={xScale2(item.start) * scaleSize + testPadX}
+                      y2={(pt * 3) / 2 + linePadding * 12 + testPadY}
+                      strokeWidth="4px"
+                      //stroke="black"
+                      stroke={coloJudge(musicKey, 1)}
                     />
                   </g>
                 );
-              });
-            }
-          })}
-        </g>
-      </svg>
-      {/*</div>*/}
+              } else if (item.name === "segment") {
+                musicKey = item.key;
+                return item.pitches.map((p, j) => {
+                  return (
+                    <g id="onpu">
+                      <circle
+                        //key={item.start}
+                        cx={
+                          padding + xScale2(item.start) * scaleSize + testPadX
+                        }
+                        cy={pt + linePadding * j + testPadY}
+                        r={dBScale(item.loudness_max)}
+                        //fill={coloJudge(item.key, item.pitches[11 - j])}
+                        fill={scale(item.pitches[11 - j])}
+                        opacity="0.85"
+                        //style={{ transitionDuration: "1s" }}
+                      />
+                    </g>
+                  );
+                });
+              }
+            })}
+          </g>
+        </svg>
+      </div>
     </div>
   );
 }
