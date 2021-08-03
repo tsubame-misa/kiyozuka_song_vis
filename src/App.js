@@ -158,6 +158,13 @@ function App() {
     .range([0, contentWidth])
     .nice();
 
+  //loudness_max
+  const dBScale = d3
+    .scaleLinear()
+    .domain(d3.extent(data, (item) => item.loudness_max))
+    .range([5, 12])
+    .nice();
+
   const svgWidth = margin.left + margin.right + contentWidth;
   const svgHeight = margin.top + margin.bottom + contentHeight;
   const len = 0.3;
@@ -192,15 +199,68 @@ function App() {
         <option value="for_tomorrrow.json">For Tomorrow</option>
       </select>
 
-      <svg>
+      <svg width={svgWidth * 6} height={svgHeight}>
         <g>
-          {data.map((item) => {
-            console.log(item);
+          {[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11].map((idx) => {
+            return (
+              <line
+                x1={10}
+                y1={10 + 12 * idx}
+                x2={svgWidth * 6}
+                y2={10 + 12 * idx}
+                strokeWidth="0.1px"
+                stroke="black"
+              />
+            );
+          })}
+          {bar.map((item, id) => {
+            return (
+              <g>
+                <line
+                  x1={xScale2(item.start) * 5}
+                  y1={0}
+                  x2={xScale2(item.start) * 5}
+                  y2={10 + 12 * 12}
+                  strokeWidth="0.5px"
+                  stroke="black"
+                />
+              </g>
+            );
+          })}
+          {beats.map((item, id) => {
+            return (
+              <g>
+                <line
+                  x1={xScale2(item.start) * 5}
+                  y1={0}
+                  x2={xScale2(item.start) * 5}
+                  y2={10 + 12 * 12}
+                  strokeWidth="0.3px"
+                  stroke="black"
+                />
+              </g>
+            );
+          })}
+          {data.map((item, i) => {
+            return item.pitches.map((p, j) => {
+              return (
+                <circle
+                  //key={item.start}
+                  cx={10 + xScale2(item.start) * 5}
+                  cy={10 + 12 * j}
+                  r={dBScale(item.loudness_max)}
+                  fill={coloJudge(item.key, item.pitches[11 - j])}
+                  //fill={scale(item.pitches[11 - j])}
+                  opacity="0.75"
+                  //style={{ transitionDuration: "1s" }}
+                />
+              );
+            });
           })}
         </g>
       </svg>
 
-      <div style={{ width: "100%", overflowY: "scroll" }}>
+      {/*<div style={{ width: "100%", overflowY: "scroll" }}>
         <svg width="45000" height="200">
           <g>
             {[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11].map((i) => {
@@ -271,15 +331,13 @@ function App() {
             {beats.map((item, id) => {
               // console.log(id, item, xScale(item.start));
               return (
-                <g /*transform={`scale(scaleSize, 1) `}*/>
+                <g >
                   <circle
                     key={item.key}
                     cx={xScale2(item.start) * scaleSize}
                     cy={20}
                     //cy={yScale(item[yProperty])}
-                    /*transform={`translate(${xScale(item[xProperty])},${yScale(
-                item[yProperty]
-              )})`}*/
+                    
                     r="2"
                     //fill="skyBlue"
                     stroke="black"
@@ -291,15 +349,13 @@ function App() {
             {bar.map((item, id) => {
               // console.log(id, item, xScale(item.start));
               return (
-                <g /*transform={`scale(scaleSize, 1) `}*/>
+                <g >
                   <circle
                     key={item.key}
                     cx={xScale2(item.start) * scaleSize}
                     cy={20}
                     //cy={yScale(item[yProperty])}
-                    /*transform={`translate(${xScale(item[xProperty])},${yScale(
-                item[yProperty]
-              )})`}*/
+                    
                     r="4"
                     stroke="black" //{colorScale(item.species)}
                     style={{ transitionDuration: "1s" }}
@@ -342,7 +398,7 @@ function App() {
                 }
                 return (
                   <g>
-                    <g /*transform={`scale(${scaleSize}, ${scaleSize}) `}*/>
+                    <g >
                       <rect
                         // x={len * j}
                         x={xScale2(d.start)}
@@ -451,7 +507,7 @@ function App() {
               />
             );
           })}
-        </g>*/}
+        </g>
         </svg>
       </div>
 
@@ -534,12 +590,7 @@ function App() {
             <svg
               viewBox={`${-margin.left} ${-margin.top} ${svgWidth} ${svgHeight}`}
             >
-              {/*<HorizontalAxis
-                len={len2}
-                term={data.slice(time - 200, time)}
-                name={""}
-                w={1000}
-              />*/}
+              
               {[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11].map((i) => {
                 return data.slice(time - 200, time).map((d, j) => {
                   let w = 10;
@@ -615,7 +666,7 @@ function App() {
                   );
                 });
               })}
-              <g /*transform={`translate(0, 200)`}*/>
+              <g >
                 {beats.map((item, id) => {
                   // console.log(id, item, xScale(item.start));
                   return (
@@ -652,10 +703,10 @@ function App() {
                   );
                 })}
               </g>
-            </svg>
+              </svg>
           );
         })}
-      </div>
+      </div>*/}
     </div>
   );
 }
