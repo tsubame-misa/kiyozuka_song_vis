@@ -161,7 +161,7 @@ function App() {
   const svgWidth = margin.left + margin.right + contentWidth;
   const svgHeight = margin.top + margin.bottom + contentHeight;
   const len = 0.3;
-  const scaleSize = 15;
+  const scaleSize = 10;
   const len2 = 15;
 
   let w_min = 100000;
@@ -171,7 +171,7 @@ function App() {
       w_min = dic;
     }
   }
-  console.log(w_min);
+  //console.log(w_min);
 
   let p = 0;
   const testArray = [];
@@ -179,7 +179,7 @@ function App() {
     testArray.push(p + w_min);
     p += w_min;
   }
-  console.log(testArray);
+  //console.log(testArray);
 
   return (
     <div /*style={{ width: "100%" }}*/>
@@ -192,12 +192,24 @@ function App() {
         <option value="for_tomorrrow.json">For Tomorrow</option>
       </select>
 
+      <svg>
+        <g>
+          {data.map((item) => {
+            console.log(item);
+          })}
+        </g>
+      </svg>
+
       <div style={{ width: "100%", overflowY: "scroll" }}>
         <svg width="45000" height="200">
           <g>
             {[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11].map((i) => {
               return data.map((d, j) => {
                 // console.log(d.start, xScale2(d.start));
+                let w = len;
+                if (j !== 0) {
+                  // w = xScale2(data[j].start - data[j - 1].start);
+                }
                 return (
                   <g>
                     <g transform={`scale(${scaleSize}, ${scaleSize}) `}>
@@ -205,7 +217,8 @@ function App() {
                         // x={len * j}
                         x={xScale2(d.start)}
                         y={1.5 + len * i}
-                        width={len}
+                        //width={len}
+                        width={w}
                         height={len}
                         //fill={scale(d.pitches[i])}
                         //fill={d3.interpolateTurbo(d.pitches[i])}
@@ -316,6 +329,132 @@ function App() {
         </svg>
       </div>
 
+      <div style={{ width: "100%", overflowY: "scroll" }}>
+        <svg width={svgWidth} height="300">
+          <g transform={`scale(${scaleSize},1) `}>
+            {[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11].map((i) => {
+              return data.map((d, j) => {
+                // console.log(d.start, xScale2(d.start));
+                let w = 10;
+                if (j !== data.length - 1) {
+                  w = xScale2(data[j + 1].start - data[j].start);
+                  // console.log(w);
+                }
+                return (
+                  <g>
+                    <g /*transform={`scale(${scaleSize}, ${scaleSize}) `}*/>
+                      <rect
+                        // x={len * j}
+                        x={xScale2(d.start)}
+                        y={1.5 + 15 * i}
+                        //width={len}
+                        width={w}
+                        height={15}
+                        //fill={scale(d.pitches[i])}
+                        //fill={d3.interpolateTurbo(d.pitches[i])}
+                        fill={scale(d.pitches[11 - i])}
+                        // key={i * segment.pitches.length + j}
+                      />
+                    </g>
+                    {j !== 0 ? (
+                      <g transform={`translate(0, 200) `}>
+                        <line
+                          x1={xScale2(data[j - 1].start)}
+                          y1={-1 * data[j - 1].loudness_max}
+                          x2={xScale2(data[j].start)}
+                          y2={-1 * data[j].loudness_max}
+                          //stroke={coloJudge(d.key, 1)}
+                          strokeWidth="0.1px"
+                          stroke="black"
+                        />
+                        <line
+                          x1={xScale2(data[j - 1].start)}
+                          y1={60}
+                          x2={xScale2(data[j].start)}
+                          y2={60}
+                          strokeWidth="0.1px"
+                          stroke="black"
+                        />
+                        <rect
+                          x={xScale2(data[j - 1].start)}
+                          y={len2 * 0.85 * i}
+                          width={
+                            xScale2(data[j].start) - xScale2(data[j - 1].start)
+                          }
+                          height={len2 * 0.85}
+                          //fill={coloJudge(d.key, d.pitches[i])}
+                          //fill={d3.interpolateTurbo(d.pitches[i])}
+                          fill={coloJudge(d.key, 1)}
+                          fillOpacity={0.1}
+                          key={i * d.length + j}
+                        />
+                      </g>
+                    ) : (
+                      []
+                    )}
+                  </g>
+                );
+              });
+            })}
+          </g>
+          <g transform={`translate(0, 200)`}>
+            {beats.map((item, id) => {
+              // console.log(id, item, xScale(item.start));
+              return (
+                <g>
+                  <circle
+                    key={item.key}
+                    cx={xScale2(item.start) * scaleSize}
+                    cy={0}
+                    //cy={yScale(item[yProperty])}
+
+                    r="2"
+                    //fill="skyBlue"
+                    stroke="black"
+                    style={{ transitionDuration: "1s" }}
+                  />
+                </g>
+              );
+            })}
+            {bar.map((item, id) => {
+              // console.log(id, item, xScale(item.start));
+              return (
+                <g>
+                  <circle
+                    key={item.key}
+                    cx={xScale2(item.start) * scaleSize}
+                    cy={0}
+                    //cy={yScale(item[yProperty])}
+
+                    r="4"
+                    stroke="black" //{colorScale(item.species)}
+                    style={{ transitionDuration: "1s" }}
+                  />
+                </g>
+              );
+            })}
+          </g>
+          {/*<g>
+          {testArray.map((d, i) => {
+            return (
+              <rect
+                // x={len * j}
+                x={6 * i}
+                y={0}
+                width={6}
+                height={6}
+                //fill={scale(d.pitches[i])}
+                //fill={d3.interpolateTurbo(d.pitches[i])}
+                //fill={scale(d.pitches[11 - i])}
+                fill="gray"
+                // key={i * segment.pitches.length + j}
+              />
+            );
+          })}
+        </g>*/}
+        </svg>
+      </div>
+
       <div style={{ width: "100%", marginTop: "25px" }}>
         {[200, 400, 600, 800, Math.min(data.length, 10000)].map((time) => {
           return (
@@ -384,6 +523,135 @@ function App() {
                   );
                 });
               })}
+            </svg>
+          );
+        })}
+      </div>
+
+      <div style={{ width: "100%", marginTop: "50px" }}>
+        {[200, 400, 600, 800, Math.min(data.length, 10000)].map((time, t) => {
+          return (
+            <svg
+              viewBox={`${-margin.left} ${-margin.top} ${svgWidth} ${svgHeight}`}
+            >
+              {/*<HorizontalAxis
+                len={len2}
+                term={data.slice(time - 200, time)}
+                name={""}
+                w={1000}
+              />*/}
+              {[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11].map((i) => {
+                return data.slice(time - 200, time).map((d, j) => {
+                  let w = 10;
+                  if (j !== 200 - 1) {
+                    w = xScale2(
+                      data.slice(time - 200, time)[j + 1].start - d.start
+                    );
+                  }
+
+                  let startDiff = 0;
+                  if (t != 0) {
+                    startDiff = xScale2(data.slice(time - 200, time)[0].start);
+                  }
+                  return (
+                    <g transform={`scale(3, 1)`}>
+                      {j !== 0 ? (
+                        <g transform={`translate(0, 200) `}>
+                          <line
+                            x1={
+                              -startDiff +
+                              xScale2(data.slice(time - 200, time)[j - 1].start)
+                            }
+                            y1={
+                              -1 *
+                              data.slice(time - 200, time)[j - 1].loudness_max
+                            }
+                            x2={-startDiff + xScale2(d.start)}
+                            y2={-1 * d.loudness_max}
+                            //stroke={coloJudge(d.key, 1)}
+                            stroke="black"
+                          />
+                          <line
+                            x1={
+                              -startDiff +
+                              xScale2(data.slice(time - 200, time)[j - 1].start)
+                            }
+                            y1={60}
+                            x2={-startDiff + xScale2(d.start)}
+                            y2={60}
+                            strokeWidth="0.5px"
+                            stroke="black"
+                          />
+                        </g>
+                      ) : (
+                        []
+                      )}
+                      <g transform={`translate(0, 200) `}>
+                        <rect
+                          x={-startDiff + xScale2(d.start)}
+                          y={len2 * i}
+                          //width={len2}
+                          width={w}
+                          height={len2}
+                          //fill={coloJudge(d.key, d.pitches[i])}
+                          //fill={d3.interpolateTurbo(d.pitches[i])}
+                          fill={coloJudge(d.key, 1)}
+                          fillOpacity={0.1}
+                          key={i * data.slice(time - 200, time).length + j}
+                        />
+                      </g>
+                      <rect
+                        x={-startDiff + xScale2(d.start)}
+                        y={len2 * i}
+                        //width={len2}
+                        width={w}
+                        height={len2}
+                        //fill={coloJudge(d.key, d.pitches[i])}
+                        //fill={d3.interpolateTurbo(d.pitches[i])}
+                        fill={scale(d.pitches[11 - i])}
+                        key={i * data.slice(time - 200, time).length + j}
+                      />
+                    </g>
+                  );
+                });
+              })}
+              <g /*transform={`translate(0, 200)`}*/>
+                {beats.map((item, id) => {
+                  // console.log(id, item, xScale(item.start));
+                  return (
+                    <g>
+                      <circle
+                        key={item.key}
+                        cx={xScale2(item.start) * scaleSize}
+                        cy={0}
+                        //cy={yScale(item[yProperty])}
+
+                        r="2"
+                        //fill="skyBlue"
+                        stroke="black"
+                        style={{ transitionDuration: "1s" }}
+                      />
+                    </g>
+                  );
+                })}
+                {bar.map((item, id) => {
+                  // console.log(id, item, xScale(item.start));
+                  return (
+                    <g>
+                      <circle
+                        key={item.key}
+                        cx={xScale2(item.start) * scaleSize}
+                        cy={0}
+                        //cy={yScale(item[yProperty])}
+
+                        r="4"
+                        stroke="black" //{colorScale(item.species)}
+                        style={{ transitionDuration: "1s" }}
+                      />
+                    </g>
+                  );
+                })}
+              </g>
             </svg>
           );
         })}
