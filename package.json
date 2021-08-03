@@ -18,9 +18,11 @@
     "url": "https://github.com/tsubame-misa/kiyozuka_song_vis/issues"
   },
   "dependencies": {
+    "bulma": "^0.9.3",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
-    "react-scripts": "^4.0.3"
+    "react-scripts": "^4.0.3",
+    "request": "^2.88.2"
   },
   "browserslist": {
     "production": [

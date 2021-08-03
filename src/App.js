@@ -173,7 +173,7 @@ function App() {
   const margin = {
     left: 100,
     right: 100,
-    top: 200,
+    top: 400,
     bottom: 100,
   };
   //曲の長さによって変えないとダメそう
@@ -256,63 +256,6 @@ function App() {
                 <option value="for_tomorrrow.json">For Tomorrow</option>
               </select>
             </div>
-            <div
-              style={{
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-              }}
-            ></div>
-            <div
-              style={{
-                paddingLeft: "1rem",
-                display: "flex",
-                alignItems: "center",
-              }}
-            >
-              調&ensp;
-              <img src={pianoImg} style={{ width: "75px" }} />
-            </div>
-          </div>
-          <div style={{ width: "100px", height: "50px" }}>
-            <svg viewBox="0 0 100 50">
-              <g>
-                <defs>
-                  <linearGradient id="Gradient2">
-                    <stop offset="0%" stopColor={scale(0)} />
-                    <stop offset="5%" stopColor={scale(0.05)} />
-                    <stop offset="10%" stopColor={scale(0.1)} />
-                    <stop offset="15%" stopColor={scale(0.15)} />
-                    <stop offset="20%" stopColor={scale(0.2)} />
-                    <stop offset="25%" stopColor={scale(0.25)} />
-                    <stop offset="30%" stopColor={scale(0.3)} />
-                    <stop offset="35%" stopColor={scale(0.35)} />
-                    <stop offset="40%" stopColor={scale(0.4)} />
-                    <stop offset="45%" stopColor={scale(0.45)} />
-                    <stop offset="50%" stopColor={scale(0.5)} />
-                    <stop offset="55%" stopColor={scale(0.55)} />
-                    <stop offset="60%" stopColor={scale(0.6)} />
-                    <stop offset="65%" stopColor={scale(0.65)} />
-                    <stop offset="70%" stopColor={scale(0.7)} />
-                    <stop offset="75%" stopColor={scale(0.75)} />
-                    <stop offset="80%" stopColor={scale(0.8)} />
-                    <stop offset="85%" stopColor={scale(0.85)} />
-                    <stop offset="90%" stopColor={scale(0.9)} />
-                    <stop offset="95%" stopColor={scale(0.95)} />
-                    <stop offset="100%" stopColor={scale(1)} />
-                  </linearGradient>
-                </defs>
-                <g /*transform={`rotate(90)`}*/>
-                  <rect
-                    x="0"
-                    y="10"
-                    width="100"
-                    height="20"
-                    fill="url('#Gradient2')"
-                  />
-                </g>
-              </g>
-            </svg>
           </div>
 
           {/*} <div style={{ width: "100%", height: "90vh" }}>*/}
@@ -397,14 +340,45 @@ function App() {
                   </linearGradient>
                 </defs>
                 <g /*transform={`rotate(90)`}*/>
+                  <text
+                    x="1100"
+                    y={-margin.top / 2}
+                    textAnchor="middle"
+                    dominantBaseline="central"
+                    fontSize="60"
+                    style={{ userSelect: "none" }}
+                  >
+                    出現確率
+                  </text>
                   <rect
-                    x="1000"
+                    x="1300"
                     y={-margin.top / 2 - 25}
                     width="500"
                     height="50"
                     fill="url('#Gradient2')"
                   />
                 </g>
+              </g>
+
+              <g>
+                <text
+                  x="2000"
+                  y={-margin.top / 2}
+                  textAnchor="middle"
+                  dominantBaseline="central"
+                  fontSize="60"
+                  style={{ userSelect: "none" }}
+                >
+                  出現確率
+                </text>
+                &ensp;
+                <image
+                  href={pianoImg}
+                  x="2150"
+                  y={-margin.top * 1.25}
+                  height="400"
+                  width="400"
+                />
               </g>
 
               <g>
