@@ -376,20 +376,20 @@ function App() {
                     y={-margin.top / 2}
                     textAnchor="middle"
                     dominantBaseline="central"
-                    fontSize="60"
+                    fontSize="75"
                     style={{ userSelect: "none" }}
                   >
                     出現確率
                   </text>
                   <rect
-                    x="1300"
+                    x="1330"
                     y={-margin.top / 2 - 25}
                     width="500"
                     height="50"
                     fill="url('#Gradient2')"
                   />
                   <text
-                    x="1275"
+                    x="1290"
                     y={-margin.top / 2}
                     textAnchor="middle"
                     dominantBaseline="central"
@@ -399,7 +399,7 @@ function App() {
                     0
                   </text>
                   <text
-                    x="1825"
+                    x="1865"
                     y={-margin.top / 2}
                     textAnchor="middle"
                     dominantBaseline="central"
@@ -416,7 +416,7 @@ function App() {
                   y={-margin.top / 2}
                   textAnchor="middle"
                   dominantBaseline="central"
-                  fontSize="60"
+                  fontSize="75"
                   style={{ userSelect: "none" }}
                 >
                   調
@@ -587,7 +587,7 @@ function App() {
                           <g>
                             <text
                               x={xScale2(item.start) * scaleSize + testPadX}
-                              y={-pt * 2.5 + testPadY}
+                              y={-pt + testPadY}
                               textAnchor="middle"
                               dominantBaseline="central"
                               fontSize="60"
