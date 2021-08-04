@@ -255,12 +255,27 @@ function App() {
 
   let barCnt = 0;
 
-  function onHover(x, y, mKey, time) {
+  function onHover(item) {
     setShow(true);
-    setClientX(x);
-    setClientY(y);
-    setInfo({ key: mKey, time: convertTime(time) });
+    setClientX(item.x);
+    setClientY(item.y);
+    if (item.name === "segment") {
+      setInfo({
+        onpu: true,
+        key: item.key,
+        time: convertTime(item.start),
+        pitches: item.pitches,
+        loudness_max: Math.round(item.loudness_max * 10) / 10,
+      });
+    } else {
+      setInfo({
+        onpu: false,
+        key: item.key,
+        time: convertTime(item.start),
+      });
+    }
   }
+  console.log(info);
 
   return (
     <div>
@@ -432,6 +447,9 @@ function App() {
               </g>
               <g>
                 {AllData.map((item, i) => {
+                  item.x = xScale2(item.start) * scaleSize + testPadX;
+                  item.y = -pt / 2 + testPadY;
+                  item.key = musicKey;
                   if (
                     i === 0 ||
                     testPadX + xScale2(item.start) * scaleSize > contentWidth
@@ -523,9 +541,6 @@ function App() {
                     });
                   }
                   if (item.name === "beat") {
-                    item.x = xScale2(item.start) * scaleSize + testPadX;
-                    item.y = -pt / 2 + testPadY;
-                    item.key = musicKey;
                     return (
                       <g>
                         {/**線が細すぎて押しにくいのでダミー */}
@@ -534,12 +549,10 @@ function App() {
                           y1={-pt / 2 + testPadY}
                           x2={xScale2(item.start) * scaleSize + testPadX}
                           y2={pt / 2 + linePadding * 12 + testPadY}
-                          strokeWidth="70px"
+                          strokeWidth="50px"
                           opacity="0"
                           stroke={coloJudge(musicKey, 1)}
-                          onMouseEnter={() =>
-                            onHover(item.x, item.y, item.key, item.start)
-                          }
+                          onMouseEnter={() => onHover(item)}
                           onMouseLeave={() => setShow(false)}
                         />
                         <line
@@ -554,9 +567,6 @@ function App() {
                     );
                   } else if (item.name === "bar") {
                     barCnt += 1;
-                    item.x = xScale2(item.start) * scaleSize + testPadX;
-                    item.y = -pt / 2 + testPadY;
-                    item.key = musicKey;
                     return (
                       <g>
                         {/**線が細すぎて押しにくいのでダミー */}
@@ -565,12 +575,10 @@ function App() {
                           y1={-pt / 2 + testPadY}
                           x2={xScale2(item.start) * scaleSize + testPadX}
                           y2={(pt * 3) / 2 + linePadding * 12 + testPadY}
-                          strokeWidth="70px"
+                          strokeWidth="50px"
                           opacity="0"
                           stroke={coloJudge(musicKey, 1)}
-                          onMouseEnter={() =>
-                            onHover(item.x, item.y, item.key, item.start)
-                          }
+                          onMouseEnter={() => onHover(item)}
                           onMouseLeave={() => setShow(false)}
                         />
                         <line
@@ -622,7 +630,11 @@ function App() {
                     musicKey = item.key;
                     return item.pitches.map((p, j) => {
                       return (
-                        <g id="onpu">
+                        <g
+                          id="onpu"
+                          onMouseEnter={() => onHover(item)}
+                          onMouseLeave={() => setShow(false)}
+                        >
                           <circle
                             //key={item.start}
                             cx={
@@ -634,7 +646,7 @@ function App() {
                             r={dBScale(item.loudness_max)}
                             fill={coloJudge2(item.key, item.pitches[11 - j])}
                             fill={scale(item.pitches[11 - j])}
-                            opacity="0.85"
+                            opacity="0.75"
                             //style={{ transitionDuration: "1s" }}
                           />
                         </g>
@@ -644,36 +656,98 @@ function App() {
                 })}
               </g>
               {show ? (
-                <g
-                  transform={`translate(${
-                    clientX >= 4000 ? clientX - 600 : clientX + 150
-                  },${clientY})`}
-                >
-                  <rect x={0} y={0} width="550" height="300" fill="gray" />
-                  <text
-                    x={550 / 2}
-                    y={75}
-                    textAnchor="middle"
-                    dominantBaseline="central"
-                    fontSize="100"
-                    style={{ userSelect: "none" }}
-                    fill="#ffffff"
-                    //key={i}
-                  >
-                    {info.time}
-                  </text>
-                  <text
-                    x={550 / 2}
-                    y={200}
-                    textAnchor="middle"
-                    dominantBaseline="central"
-                    fontSize="100"
-                    style={{ userSelect: "none" }}
-                    fill="#ffffff"
-                    //key={i}
-                  >
-                    Key : {keyDictEng[info.key]}
-                  </text>
+                <g>
+                  {info.onpu === true ? (
+                    <g
+                      transform={`translate(${
+                        clientX >= 3000 ? clientX - 900 : clientX + 150
+                      },${clientY})`}
+                    >
+                      <rect
+                        x={0}
+                        y={0}
+                        width="800"
+                        height="450"
+                        fill="#968479"
+                        opacity="0.85"
+                      />
+                      <text
+                        x={800 / 2}
+                        y={75}
+                        textAnchor="middle"
+                        dominantBaseline="central"
+                        fontSize="100"
+                        style={{ userSelect: "none" }}
+                        fill="#ffffff"
+                        //key={i}
+                      >
+                        {info.time}
+                      </text>
+                      <text
+                        x={800 / 2}
+                        y={200}
+                        textAnchor="middle"
+                        dominantBaseline="central"
+                        fontSize="100"
+                        style={{ userSelect: "none" }}
+                        fill="#ffffff"
+                        //key={i}
+                      >
+                        Key : {keyDictEng[info.key]}
+                      </text>
+                      <text
+                        x={800 / 2}
+                        y={350}
+                        textAnchor="middle"
+                        dominantBaseline="central"
+                        fontSize="100"
+                        style={{ userSelect: "none" }}
+                        fill="#ffffff"
+                        //key={i}
+                      >
+                        最大音量 : {info.loudness_max}
+                      </text>
+                    </g>
+                  ) : (
+                    <g
+                      transform={`translate(${
+                        clientX >= 4000 ? clientX - 600 : clientX + 150
+                      },${clientY})`}
+                    >
+                      <rect
+                        x={0}
+                        y={0}
+                        width="550"
+                        height="300"
+                        fill="gray"
+                        opacity="0.85"
+                      />
+                      <text
+                        x={550 / 2}
+                        y={75}
+                        textAnchor="middle"
+                        dominantBaseline="central"
+                        fontSize="100"
+                        style={{ userSelect: "none" }}
+                        fill="#ffffff"
+                        //key={i}
+                      >
+                        {info.time}
+                      </text>
+                      <text
+                        x={550 / 2}
+                        y={200}
+                        textAnchor="middle"
+                        dominantBaseline="central"
+                        fontSize="100"
+                        style={{ userSelect: "none" }}
+                        fill="white"
+                        //key={i}
+                      >
+                        Key : {keyDictEng[info.key]}
+                      </text>
+                    </g>
+                  )}
                 </g>
               ) : (
                 []
