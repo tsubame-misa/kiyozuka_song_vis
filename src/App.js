@@ -113,7 +113,6 @@ function App() {
   const [show, setShow] = useState(false);
   const [clientX, setClientX] = useState(0);
   const [clientY, setClientY] = useState(0);
-  const [showMusicKey, setShowMusicKey] = useState();
   const [info, setInfo] = useState({ musicKey: "", time: "" });
 
   useEffect(() => {
@@ -196,7 +195,7 @@ function App() {
   const margin = {
     left: 100,
     right: 100,
-    top: 400,
+    top: 500,
     bottom: 100,
   };
   const contentWidth = 4500;
@@ -323,6 +322,7 @@ function App() {
                   dominantBaseline="central"
                   fontSize="75"
                   style={{ userSelect: "none" }}
+                  fontFamily="San Francisco"
                 >
                   音量
                 </text>
@@ -398,6 +398,7 @@ function App() {
                     dominantBaseline="central"
                     fontSize="75"
                     style={{ userSelect: "none" }}
+                    fontFamily="San Francisco"
                   >
                     出現確率
                   </text>
@@ -438,17 +439,34 @@ function App() {
                   dominantBaseline="central"
                   fontSize="75"
                   style={{ userSelect: "none" }}
+                  fontFamily="San Francisco"
                 >
-                  調
+                  キー
                 </text>
-                &ensp;
-                <image
-                  href={pianoImg}
-                  x="2100"
-                  y={-margin.top * 1.25}
-                  height="500"
-                  width="450"
-                />
+                {hueDark.map((color, c) => {
+                  return (
+                    <g>
+                      <rect
+                        x={2150 + 225 * c}
+                        y={-margin.top + margin.top / 4}
+                        width="15"
+                        height="200"
+                        fill={color}
+                      />
+                      <text
+                        x={2150 + 225 * c + 5}
+                        y={-margin.top + 50}
+                        textAnchor="middle"
+                        dominantBaseline="central"
+                        fontSize="75"
+                        style={{ userSelect: "none" }}
+                        fontFamily="San Francisco"
+                      >
+                        {keyDictEng[c]}
+                      </text>
+                    </g>
+                  );
+                })}
               </g>
               <g>
                 {AllData.map((item, i) => {
@@ -674,7 +692,7 @@ function App() {
                 })}
               </g>
               {show ? (
-                <g>
+                <g fontFamily="San Francisco">
                   {info.onpu === true ? (
                     <g
                       transform={`translate(${
@@ -711,7 +729,7 @@ function App() {
                         fill="#ffffff"
                         //key={i}
                       >
-                        Key : {keyDictEng[info.key]}
+                        キー : {keyDictEng[info.key]}
                       </text>
                       <text
                         x={800 / 2}
@@ -735,7 +753,7 @@ function App() {
                       <rect
                         x={0}
                         y={0}
-                        width="550"
+                        width="600"
                         height="300"
                         fill="gray"
                         opacity="0.85"
@@ -762,7 +780,7 @@ function App() {
                         fill="white"
                         //key={i}
                       >
-                        Key : {keyDictEng[info.key]}
+                        キー : {keyDictEng[info.key]}
                       </text>
                     </g>
                   )}
