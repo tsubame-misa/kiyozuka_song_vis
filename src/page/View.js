@@ -96,6 +96,7 @@ function App() {
   const [show, setShow] = useState(false);
   const [clientX, setClientX] = useState(0);
   const [clientY, setClientY] = useState(0);
+  const [meta, setMeta] = useState(null);
   const [info, setInfo] = useState({ musicKey: "", time: "" });
   const { name } = useParams();
   console.log(name);
@@ -130,6 +131,44 @@ function App() {
       setBar(musicData.bars);
       setBeats(musicData.beats);
     })();
+  }, [song]);
+
+  const spotify = {
+    ClientId: process.env.REACT_APP_CLIENTID,
+    ClientSecret: process.env.REACT_APP_CLIENTSECRET,
+  };
+
+  let authOptions = {
+    url: "https://accounts.spotify.com/api/token",
+    headers: {
+      Authorization:
+        "Basic " +
+        new Buffer.from(spotify.ClientId + ":" + spotify.ClientSecret).toString(
+          "base64"
+        ),
+    },
+    form: {
+      grant_type: "client_credentials",
+    },
+    json: true,
+  };
+
+  useEffect(() => {
+    request.post(authOptions, function (error, response, body) {
+      if (!error && response.statusCode === 200) {
+        var token = body.access_token;
+        var options = {
+          url: `https://api.spotify.com/v1/tracks/${name}`,
+          headers: {
+            Authorization: "Bearer " + token,
+          },
+          json: true,
+        };
+        request.get(options, function (error, response, body) {
+          setMeta(body);
+        });
+      }
+    });
   }, [song]);
 
   function coloJudge(key, pitch) {
@@ -255,7 +294,15 @@ function App() {
       <main>
         <section className="section">
           <div style={{ display: "flex" }}>
-            <div className="subtitle is-3">{song?.name}</div>
+            <div className="subtitle is-3">
+              <a
+                href={meta?.external_urls.spotify}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                {song?.name}
+              </a>
+            </div>
           </div>
 
           {data.length === 0 ? (
