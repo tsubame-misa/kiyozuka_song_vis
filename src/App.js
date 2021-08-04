@@ -3,43 +3,20 @@ import * as d3 from "d3";
 import "./style.css";
 import pianoImg from "./images/piano2.png";
 
-function HorizontalAxis({ len, term, name, w }) {
-  return (
-    <g>
-      <text
-        transform={`translate(${w / 2} -40)`}
-        textAnchor="middle"
-        dominantBaseline="central"
-        fontSize="12"
-        style={{ userSelect: "none" }}
-      >
-        {name}
-      </text>
-      {term.map((t, i) => {
-        if (i % 50 === 0) {
-          return (
-            <g
-              transform={`translate(${len * i + len}, -20) rotate(-45)`}
-              key={i}
-            >
-              <text
-                x="0"
-                textAnchor="middle"
-                dominantBaseline="central"
-                fontSize="20"
-                style={{ userSelect: "none" }}
-                key={i}
-              >
-                {Math.floor(Math.floor(t.start) / 60)}:
-                {Math.floor(t.start % 60)}
-              </text>
-            </g>
-          );
-        }
-      })}
-    </g>
-  );
-}
+const keyDict = {
+  0: "ハ",
+  1: "嬰ハ/変二",
+  2: "ニ",
+  3: "嬰ニ/変ホ",
+  4: "ホ",
+  5: "ヘ",
+  6: "嬰ヘ/変ト",
+  7: "ト",
+  8: "嬰ト/変イ",
+  9: "イ",
+  10: "嬰イ/変ロ",
+  11: "ロ",
+};
 
 function App() {
   const spotify = {
@@ -66,6 +43,10 @@ function App() {
   const [data, setData] = useState([]);
   const [bar, setBar] = useState([]);
   const [beats, setBeats] = useState([]);
+  const [show, setShow] = useState(false);
+  const [clientX, setClientX] = useState(0);
+  const [clientY, setClientY] = useState(0);
+  const [showMusicKey, setShowMusicKey] = useState();
 
   useEffect(() => {
     (async () => {
@@ -232,6 +213,16 @@ function App() {
   function zeroPadding(num, length) {
     return ("0000000000" + num).slice(-length);
   }
+
+  function onHover(e, x, y, mKey) {
+    console.log(e);
+    setShow(true);
+    setClientX(x);
+    setClientY(y);
+    setShowMusicKey(mKey);
+    console.log(x, y);
+  }
+  console.log(clientX, clientY, show);
 
   return (
     <div>
@@ -510,7 +501,9 @@ function App() {
                     );
                   } else if (item.name === "bar") {
                     barCnt += 1;
-                    console.log(barCnt, barCnt % 6);
+                    item.x = xScale2(item.start) * scaleSize + testPadX;
+                    item.y = -pt / 2 + testPadY;
+                    item.key = musicKey;
                     return (
                       <g>
                         <line
@@ -521,6 +514,11 @@ function App() {
                           strokeWidth="4px"
                           //stroke="black"
                           stroke={coloJudge(musicKey, 1)}
+                          //何段目かの情報の保存。。。
+                          onMouseEnter={(e) =>
+                            onHover(e, item.x, item.y, item.key)
+                          }
+                          // onMouseLeave={() => setShow(false)}
                         />
 
                         {barCnt % 6 === 0 ? (
@@ -583,6 +581,19 @@ function App() {
                     });
                   }
                 })}
+              </g>
+              <g>
+                <text
+                  x={clientX}
+                  y={clientY}
+                  textAnchor="middle"
+                  dominantBaseline="central"
+                  fontSize="100"
+                  style={{ userSelect: "none" }}
+                  //key={i}
+                >
+                  {keyDict[showMusicKey]}
+                </text>
               </g>
             </svg>
           </div>
