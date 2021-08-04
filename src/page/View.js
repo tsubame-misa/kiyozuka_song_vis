@@ -2,8 +2,11 @@ import { useEffect, useState } from "react";
 import * as d3 from "d3";
 import "../style.css";
 import request from "request";
+import { useParams } from "react-router-dom";
+import { musicIDs } from "./Home";
+import { Link } from "react-router-dom";
 
-const keyDict = {
+export const keyDict = {
   0: "ハ",
   1: "嬰ハ/変二",
   2: "ニ",
@@ -86,27 +89,7 @@ function convertTime(second) {
 }
 
 function App() {
-  const spotify = {
-    ClientId: process.env.REACT_APP_CLIENTID,
-    ClientSecret: process.env.REACT_APP_CLIENTSECRET,
-  };
-
-  let authOptions = {
-    url: "https://accounts.spotify.com/api/token",
-    headers: {
-      Authorization:
-        "Basic " +
-        new Buffer.from(spotify.ClientId + ":" + spotify.ClientSecret).toString(
-          "base64"
-        ),
-    },
-    form: {
-      grant_type: "client_credentials",
-    },
-    json: true,
-  };
-
-  const [song, setSong] = useState("/baby_got_bless_you.json");
+  const [song, setSong] = useState(null);
   const [data, setData] = useState([]);
   const [bar, setBar] = useState([]);
   const [beats, setBeats] = useState([]);
@@ -114,11 +97,20 @@ function App() {
   const [clientX, setClientX] = useState(0);
   const [clientY, setClientY] = useState(0);
   const [info, setInfo] = useState({ musicKey: "", time: "" });
-  const [meta, setMeta] = useState(null);
+  const { name } = useParams();
+  console.log(name);
 
   useEffect(() => {
+    let path = "/";
     (async () => {
-      const request2 = await fetch(song);
+      for (const m of musicIDs) {
+        if (m.id === name) {
+          path = m.path;
+          setSong(m);
+        }
+      }
+      console.log(path);
+      const request2 = await fetch(path);
       const musicData = await request2.json();
       const sectionData = await musicData.sections;
       const Data = musicData.segments;
@@ -137,62 +129,14 @@ function App() {
       setData(Data);
       setBar(musicData.bars);
       setBeats(musicData.beats);
-
-      request.post(authOptions, function (error, response, body) {
-        if (!error && response.statusCode === 200) {
-          // use the access token to access the Spotify Web API
-          var token = body.access_token;
-          var options = {
-            url: `https://api.spotify.com/v1/artists/1vCWHaC5f2uS3yhpwWbIA6/albums?album_type=SINGLE&offset=20&limit=10`,
-            headers: {
-              Authorization: "Bearer " + token,
-            },
-            json: true,
-          };
-          request.get(options, function (error, response, body) {
-            setMeta(body);
-          });
-        }
-      });
     })();
   }, [song]);
-
-  useEffect(() => {
-    request.post(authOptions, function (error, response, body) {
-      if (!error && response.statusCode === 200) {
-        // use the access token to access the Spotify Web API
-        var token = body.access_token;
-        var options = {
-          url: `https://api.spotify.com/v1/artists/1vCWHaC5f2uS3yhpwWbIA6/albums?album_type=SINGLE&offset=20&limit=10`,
-          headers: {
-            Authorization: "Bearer " + token,
-          },
-          json: true,
-        };
-        request.get(options, function (error, response, body) {
-          setMeta(body);
-        });
-      }
-    });
-  }, []);
-
-  console.log(meta);
 
   function coloJudge(key, pitch) {
     const colorScale = d3
       .scaleLinear()
       .domain([0, 1])
       .range(["#FFFFFF", hueDark[key]]);
-
-    const color = colorScale(pitch);
-    return color;
-  }
-
-  function coloJudge2(key, pitch) {
-    const colorScale = d3
-      .scaleLinear()
-      .domain([0, 1])
-      .range([hueLight[key], "#000000"]);
 
     const color = colorScale(pitch);
     return color;
@@ -312,8 +256,9 @@ function App() {
         <section className="section">
           <div style={{ display: "flex" }}>
             <div style={{ display: "flex", alignItems: "center" }}>
-              <p>曲名&ensp;</p>
-              <select
+              <div className="subtitle is-3">{song?.name}</div>
+
+              {/*<select
                 onChange={(e) => {
                   setSong(e.target.value);
                 }}
@@ -338,7 +283,7 @@ function App() {
                   MEDAL SUZDAL PANIC◎○●
                 </option>
                 <option value="cuty_hunny.json">キューティーハニー</option>
-              </select>
+              </select>*/}
             </div>
           </div>
 
@@ -823,6 +768,16 @@ function App() {
                 []
               )}
             </svg>
+            <div
+              className="pb-6"
+              style={{ display: "flex", justifyContent: "center" }}
+            >
+              <button className="button">
+                <Link to={`/`} className="has-text-black">
+                  曲選択に戻る
+                </Link>
+              </button>
+            </div>
           </div>
         </section>
       </main>

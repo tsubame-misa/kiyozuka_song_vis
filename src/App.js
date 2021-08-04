@@ -11,6 +11,7 @@ import Footer from "./components/Footer";*/
 import View from "./page/View";
 import Home from "./page/Home";
 import Header from "./components/header";
+import Footer from "./components/footer";
 
 function App() {
   return (
@@ -32,7 +33,7 @@ function App() {
             </Switch>
           </div>
         </section>
-        {/*<Footer />*/}
+        <Footer />
       </div>
     </Router>
   );
