@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import * as d3 from "d3";
 import "./style.css";
 import pianoImg from "./images/piano2.png";
+import request from "request";
 
 const keyDict = {
   0: "ハ",
@@ -114,11 +115,12 @@ function App() {
   const [clientX, setClientX] = useState(0);
   const [clientY, setClientY] = useState(0);
   const [info, setInfo] = useState({ musicKey: "", time: "" });
+  const [meta, setMeta] = useState(null);
 
   useEffect(() => {
     (async () => {
-      const request = await fetch(song);
-      const musicData = await request.json();
+      const request2 = await fetch(song);
+      const musicData = await request2.json();
       const sectionData = await musicData.sections;
       const Data = musicData.segments;
       for (let s = 1; s < sectionData.length; s++) {
@@ -137,8 +139,8 @@ function App() {
       setBar(musicData.bars);
       setBeats(musicData.beats);
 
-      /*request.post(authOptions, function (error, response, body) {
-        if (!error && response.statusCode === 200 && data.length > 0) {
+      request.post(authOptions, function (error, response, body) {
+        if (!error && response.statusCode === 200) {
           // use the access token to access the Spotify Web API
           var token = body.access_token;
           var options = {
@@ -149,12 +151,33 @@ function App() {
             json: true,
           };
           request.get(options, function (error, response, body) {
-            setSimilarSongs(body.tracks);
+            setMeta(body);
           });
         }
-      });*/
+      });
     })();
   }, [song]);
+
+  useEffect(() => {
+    request.post(authOptions, function (error, response, body) {
+      if (!error && response.statusCode === 200) {
+        // use the access token to access the Spotify Web API
+        var token = body.access_token;
+        var options = {
+          url: `https://api.spotify.com/v1/artists/1vCWHaC5f2uS3yhpwWbIA6/albums?album_type=SINGLE&offset=20&limit=10`,
+          headers: {
+            Authorization: "Bearer " + token,
+          },
+          json: true,
+        };
+        request.get(options, function (error, response, body) {
+          setMeta(body);
+        });
+      }
+    });
+  }, []);
+
+  console.log(meta);
 
   function coloJudge(key, pitch) {
     const colorScale = d3
