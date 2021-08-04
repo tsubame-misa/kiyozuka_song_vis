@@ -253,6 +253,12 @@ function App() {
     .nice();
   const dBDiff = dBScale.domain();
 
+  const opacityScale = d3
+    .scaleLinear()
+    .domain([0, 1])
+    .range([0.5, 0.75])
+    .nice();
+
   let barCnt = 0;
 
   function onHover(item) {
@@ -275,8 +281,6 @@ function App() {
       });
     }
   }
-
-  console.log(clientX, clientY);
 
   return (
     <div>
@@ -636,7 +640,12 @@ function App() {
                   }
                   if (item.name === "segment") {
                     musicKey = item.key;
-                    return item.pitches.map((p, j) => {
+                    const pitchObj = [];
+                    for (let i = 0; i < item.pitches.length; i++) {
+                      pitchObj.push({ value: item.pitches[i], idx: i });
+                    }
+                    pitchObj.sort((a, b) => a.value - b.value);
+                    return pitchObj.map((p, j) => {
                       return (
                         <g
                           id="onpu"
@@ -650,11 +659,12 @@ function App() {
                               xScale2(item.start) * scaleSize +
                               testPadX2
                             }
-                            cy={pt + linePadding * j + testPadY2}
+                            cy={pt + linePadding * p.idx + testPadY2}
                             r={dBScale(item.loudness_max)}
-                            fill={coloJudge2(item.key, item.pitches[11 - j])}
-                            fill={scale(item.pitches[11 - j])}
-                            opacity="0.5"
+                            //fill={coloJudge2(item.key, p.value)}
+                            fill={scale(p.value)}
+                            //opacity="0.5"
+                            opacity={opacityScale(p.value)}
                             //style={{ transitionDuration: "1s" }}
                           />
                         </g>
