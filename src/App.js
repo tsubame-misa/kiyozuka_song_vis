@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import * as d3 from "d3";
 import "./style.css";
-import pianoImg from "./images/piano2.png";
 import request from "request";
 
 const keyDict = {
@@ -221,7 +220,9 @@ function App() {
     top: 500,
     bottom: 100,
   };
-  const contentWidth = 4500;
+  const contentWidth = 4500; //5分
+  //const contentWidth = (4500 * 300) / AllData[AllData.length - 1].start;
+  console.log(contentWidth);
   const contentHeight = 250;
 
   const xScale2 = d3
@@ -231,7 +232,7 @@ function App() {
     .nice();
 
   //これも何かしらの計算で出した方がいい
-  const scaleSize = 15;
+  const scaleSize = 15 * (AllData[AllData.length - 1].start / 300);
 
   /*let w_min = 100000;
   for (let i = 1; i < data.length; i++) {
@@ -247,6 +248,7 @@ function App() {
     testArray.push(p + w_min);
     p += w_min;
   }*/
+  console.log(AllData);
 
   let musicKey = data[0]?.key;
   let testPadY = 0;
@@ -328,6 +330,21 @@ function App() {
                   Baby god bless you
                 </option>
                 <option value="for_tomorrrow.json">For Tomorrow</option>
+                <option value="hibi.json">日々</option>
+                <option value="aotonatsu.json">青と夏</option>
+                <option value="hutarigoto.json">ふたりごと</option>
+                <option value="ultra_soul.json">ultra soul</option>
+                <option value="wild-screenbaroque.json">
+                  wi(l)d-screen baroque
+                </option>
+                <option value="Happiness_on_High_TokyoDisneyResort30.json">
+                  Happiness on High - Tokyo Disney Resort 30th Anniversary Fire
+                  Work
+                </option>
+                <option value="MEDAL_SUZDAL_PANIC.json">
+                  MEDAL SUZDAL PANIC◎○●
+                </option>
+                <option value="cuty_hunny.json">キューティーハニー</option>
               </select>
             </div>
           </div>
@@ -701,7 +718,7 @@ function App() {
                               xScale2(item.start) * scaleSize +
                               testPadX2
                             }
-                            cy={pt + linePadding * p.idx + testPadY2}
+                            cy={pt + linePadding * (11 - p.idx) + testPadY2}
                             r={dBScale(item.loudness_max)}
                             //fill={coloJudge2(item.key, p.value)}
                             fill={scale(p.value)}
