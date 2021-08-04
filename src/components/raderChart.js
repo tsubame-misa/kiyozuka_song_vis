@@ -1,7 +1,22 @@
 import React from "react";
 import { useState } from "react";
 import * as d3 from "d3";
-//import "../tooltip.css";
+import "./tooltip.css";
+
+function Tooltip({ clientX, clientY, show, feature, value }) {
+  if (feature === "instrumentalness") {
+    clientX -= 220;
+  }
+  return (
+    <div>
+      {show && (
+        <div id="tooltip" style={{ top: `${clientY}px`, left: `${clientX}px` }}>
+          {feature}:{value}
+        </div>
+      )}
+    </div>
+  );
+}
 
 function RaderChart({ data }) {
   const useData = [
@@ -15,6 +30,11 @@ function RaderChart({ data }) {
     "valence",
   ];
 
+  const [clientX, setClientX] = useState(0);
+  const [clientY, setClientY] = useState(0);
+  const [show, setShow] = useState(false);
+  const [info, setInfo] = useState({});
+
   const len = useData.length;
   const posX = 50;
   const posY = 50;
@@ -27,7 +47,7 @@ function RaderChart({ data }) {
   let score = "";
   const scorePoint = [];
   const c = Math.PI / 180;
-  //const tooltipStyle = d3.select("body").append("div").attr("class", "tooltip");
+  const tooltipStyle = d3.select("body").append("div").attr("class", "tooltip");
 
   for (let _r = 0; _r < rs.length; _r++) {
     for (let i = 0; i <= len; i++) {
@@ -94,6 +114,18 @@ function RaderChart({ data }) {
   const svgWidth = margin.left + margin.right + contentWidth;
   const svgHeight = margin.top + margin.bottom + contentHeight;
 
+  function onHover(e) {
+    const clientX = e.pageX;
+    const clientY = e.pageY - 200;
+    setShow(true);
+    setClientX(clientX);
+    setClientY(clientY);
+  }
+
+  function changeInfo(feature, value) {
+    setInfo({ feature: feature, value: value });
+  }
+
   return (
     <div>
       <svg
@@ -137,14 +169,10 @@ function RaderChart({ data }) {
                     stroke="lightgray"
                     strokeWidth="0.5"
                     onMouseMove={(e) => {
-                      /* tooltipStyle.style("visibility", "visible");
-                      tooltipStyle
-                        .style("top", e.pageY - 65 + "px")
-                        .style("left", e.pageX - 40 + "px")
-                        .html(p.name + "<br>" + p.value);*/
+                      onHover(e);
                     }}
                     onMouseLeave={() => {
-                      //tooltipStyle.style("visibility", "hidden");
+                      setShow(false);
                     }}
                   />
                 ) : (
@@ -184,14 +212,11 @@ function RaderChart({ data }) {
                   stroke="#485fc7"
                   strokeWidth={0.5}
                   onMouseMove={(e) => {
-                    /*tooltipStyle.style("visibility", "visible");
-                    tooltipStyle
-                      .style("top", e.pageY - 65 + "px")
-                      .style("left", e.pageX - 40 + "px")
-                      .html(p.name + "<br>" + p.value);*/
+                    onHover(e);
+                    changeInfo(p.name, p.value);
                   }}
                   onMouseLeave={() => {
-                    //tooltipStyle.style("visibility", "hidden");
+                    setShow(false);
                   }}
                 />
               </g>
@@ -199,6 +224,13 @@ function RaderChart({ data }) {
           })}
         </g>
       </svg>
+      <Tooltip
+        clientX={clientX}
+        clientY={clientY}
+        show={show}
+        feature={info.feature}
+        value={info.value}
+      />
     </div>
   );
 }
