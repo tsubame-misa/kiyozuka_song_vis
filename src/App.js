@@ -173,7 +173,6 @@ function App() {
     top: 400,
     bottom: 100,
   };
-  //曲の長さによって変えないとダメそう
   const contentWidth = 4500;
   const contentHeight = 250;
 
@@ -186,22 +185,21 @@ function App() {
   //これも何かしらの計算で出した方がいい
   const scaleSize = 15;
 
-  let w_min = 100000;
+  /*let w_min = 100000;
   for (let i = 1; i < data.length; i++) {
     const dic = data[i].start - data[i - 1].start;
     if (dic < w_min) {
       w_min = dic;
     }
   }
-  //console.log(w_min);
-
+  
   let p = 0;
   const testArray = [];
   while (p < data[data.length - 1]?.start) {
     testArray.push(p + w_min);
     p += w_min;
-  }
-  //console.log(testArray);
+  }*/
+
   let musicKey = data[0]?.key;
   let testPadY = 0;
   let testPadX = 0;
@@ -228,6 +226,12 @@ function App() {
     .range([2.5, linePadding - 7])
     .nice();
   const dBDiff = dBScale.domain();
+
+  let barCnt = 0;
+
+  function zeroPadding(num, length) {
+    return ("0000000000" + num).slice(-length);
+  }
 
   return (
     <div>
@@ -505,6 +509,8 @@ function App() {
                       </g>
                     );
                   } else if (item.name === "bar") {
+                    barCnt += 1;
+                    console.log(barCnt, barCnt % 6);
                     return (
                       <g>
                         <line
@@ -516,6 +522,25 @@ function App() {
                           //stroke="black"
                           stroke={coloJudge(musicKey, 1)}
                         />
+
+                        {barCnt % 6 === 0 ? (
+                          <g>
+                            <text
+                              x={xScale2(item.start) * scaleSize + testPadX}
+                              y={-pt * 2.5 + testPadY}
+                              textAnchor="middle"
+                              dominantBaseline="central"
+                              fontSize="60"
+                              style={{ userSelect: "none" }}
+                              //key={i}
+                            >
+                              {Math.floor(Math.floor(item.start) / 60)}:
+                              {zeroPadding(Math.floor(item.start % 60), 2)}
+                            </text>
+                          </g>
+                        ) : (
+                          []
+                        )}
                       </g>
                     );
                   } else if (item.name === "segment") {
