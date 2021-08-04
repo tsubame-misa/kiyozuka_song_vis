@@ -18,6 +18,30 @@ const keyDict = {
   11: "ロ",
 };
 
+const keyDictEng = {
+  0: "C",
+  1: "#C/♭D",
+  2: "D",
+  3: "#D/♭E",
+  4: "E",
+  5: "F",
+  6: "#F/♭G",
+  7: "G",
+  8: "#G/♭A",
+  9: "A",
+  10: "#A/♭B",
+  11: "B",
+};
+
+function convertTime(second) {
+  function zeroPadding(num, length) {
+    return ("0000000000" + num).slice(-length);
+  }
+  const min = Math.floor(Math.floor(second) / 60);
+  const sec = zeroPadding(Math.floor(second % 60), 2);
+  return String(min) + ":" + String(sec);
+}
+
 function App() {
   const spotify = {
     ClientId: process.env.REACT_APP_CLIENTID,
@@ -47,12 +71,12 @@ function App() {
   const [clientX, setClientX] = useState(0);
   const [clientY, setClientY] = useState(0);
   const [showMusicKey, setShowMusicKey] = useState();
+  const [info, setInfo] = useState({ musicKey: "", time: "" });
 
   useEffect(() => {
     (async () => {
       const request = await fetch(song);
       const musicData = await request.json();
-      console.log(musicData);
       const sectionData = await musicData.sections;
       const Data = musicData.segments;
       for (let s = 1; s < sectionData.length; s++) {
@@ -89,8 +113,6 @@ function App() {
       });*/
     })();
   }, [song]);
-  console.log(data);
-  console.log(bar);
 
   function coloJudge(key, pitch) {
     const hueDark = [
@@ -145,7 +167,6 @@ function App() {
     AllData.push(d);
   }
   AllData.sort((a, b) => a.start - b.start);
-  console.log(AllData);
 
   const scale = d3.scaleLinear().domain([0, 1]).range(["#FFFFFF", "#0C060F"]);
   const margin = {
@@ -210,19 +231,12 @@ function App() {
 
   let barCnt = 0;
 
-  function zeroPadding(num, length) {
-    return ("0000000000" + num).slice(-length);
-  }
-
-  function onHover(e, x, y, mKey) {
-    console.log(e);
+  function onHover(x, y, mKey, time) {
     setShow(true);
     setClientX(x);
     setClientY(y);
-    setShowMusicKey(mKey);
-    console.log(x, y);
+    setInfo({ key: mKey, time: convertTime(time) });
   }
-  console.log(clientX, clientY, show);
 
   return (
     <div>
@@ -485,8 +499,25 @@ function App() {
                     });
                   }
                   if (item.name === "beat") {
+                    item.x = xScale2(item.start) * scaleSize + testPadX;
+                    item.y = -pt / 2 + testPadY;
+                    item.key = musicKey;
                     return (
                       <g>
+                        {/**線が細すぎて押しにくいのでダミー */}
+                        <line
+                          x1={xScale2(item.start) * scaleSize + testPadX}
+                          y1={-pt / 2 + testPadY}
+                          x2={xScale2(item.start) * scaleSize + testPadX}
+                          y2={(pt * 3) / 2 + linePadding * 12 + testPadY}
+                          strokeWidth="70px"
+                          opacity="0"
+                          stroke={coloJudge(musicKey, 1)}
+                          onMouseEnter={() =>
+                            onHover(item.x, item.y, item.key, item.start)
+                          }
+                          onMouseLeave={() => setShow(false)}
+                        />
                         <line
                           x1={xScale2(item.start) * scaleSize + testPadX}
                           //y1={-pt}
@@ -506,19 +537,27 @@ function App() {
                     item.key = musicKey;
                     return (
                       <g>
+                        {/**線が細すぎて押しにくいのでダミー */}
+                        <line
+                          x1={xScale2(item.start) * scaleSize + testPadX}
+                          y1={-pt / 2 + testPadY}
+                          x2={xScale2(item.start) * scaleSize + testPadX}
+                          y2={(pt * 3) / 2 + linePadding * 12 + testPadY}
+                          strokeWidth="70px"
+                          opacity="0"
+                          stroke={coloJudge(musicKey, 1)}
+                          onMouseEnter={() =>
+                            onHover(item.x, item.y, item.key, item.start)
+                          }
+                          onMouseLeave={() => setShow(false)}
+                        />
                         <line
                           x1={xScale2(item.start) * scaleSize + testPadX}
                           y1={-pt / 2 + testPadY}
                           x2={xScale2(item.start) * scaleSize + testPadX}
                           y2={(pt * 3) / 2 + linePadding * 12 + testPadY}
                           strokeWidth="4px"
-                          //stroke="black"
                           stroke={coloJudge(musicKey, 1)}
-                          //何段目かの情報の保存。。。
-                          onMouseEnter={(e) =>
-                            onHover(e, item.x, item.y, item.key)
-                          }
-                          // onMouseLeave={() => setShow(false)}
                         />
 
                         {barCnt % 6 === 0 ? (
@@ -532,8 +571,7 @@ function App() {
                               style={{ userSelect: "none" }}
                               //key={i}
                             >
-                              {Math.floor(Math.floor(item.start) / 60)}:
-                              {zeroPadding(Math.floor(item.start % 60), 2)}
+                              {convertTime(item.start)}
                             </text>
                           </g>
                         ) : (
@@ -582,19 +620,41 @@ function App() {
                   }
                 })}
               </g>
-              <g>
-                <text
-                  x={clientX}
-                  y={clientY}
-                  textAnchor="middle"
-                  dominantBaseline="central"
-                  fontSize="100"
-                  style={{ userSelect: "none" }}
-                  //key={i}
+              {show ? (
+                <g
+                  transform={`translate(${
+                    clientX >= 4000 ? clientX - 600 : clientX + 150
+                  },${clientY})`}
                 >
-                  {keyDict[showMusicKey]}
-                </text>
-              </g>
+                  <rect x={0} y={0} width="550" height="300" fill="gray" />
+                  <text
+                    x={550 / 2}
+                    y={75}
+                    textAnchor="middle"
+                    dominantBaseline="central"
+                    fontSize="100"
+                    style={{ userSelect: "none" }}
+                    fill="#ffffff"
+                    //key={i}
+                  >
+                    {info.time}
+                  </text>
+                  <text
+                    x={550 / 2}
+                    y={200}
+                    textAnchor="middle"
+                    dominantBaseline="central"
+                    fontSize="100"
+                    style={{ userSelect: "none" }}
+                    fill="#ffffff"
+                    //key={i}
+                  >
+                    Key : {keyDictEng[info.key]}
+                  </text>
+                </g>
+              ) : (
+                []
+              )}
             </svg>
           </div>
         </section>
