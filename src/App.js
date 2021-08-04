@@ -33,6 +33,49 @@ const keyDictEng = {
   11: "B",
 };
 
+const hueDark = [
+  "#C7000B", //C red
+  "#D28300", //C# orange
+  "#DFD000", //D yellow
+  "#7BAA17", //D# chartreuse
+  "#00873C", //E lime
+  "#008A83", //F springgreen
+  "#008DCB", //F# cyan
+  "#005AA0", //G deepskyblue
+  "#181878", //G# blue
+  "#800073", //A darckviolet
+  "#C6006F", //A# magenta
+  "#C70044", //B Deeppink
+];
+const hue = [
+  "#C7000B", //C red"#FF0000"
+  "#FF7F00", //C# orange
+  "#FF7F00", //D yellow
+  "#FF7F00", //D# chartreuse
+  "#00FF00", //E lime
+  "#00FF7F", //F springgreen
+  "#00FFFF", //F# cyan
+  "#007FFF", //G deepskyblue
+  "#0000FF", //G# blue
+  "#7F00FF", //A darckviolet
+  "#FF00FF", //A# magenta
+  "#FF007F", //B Deeppink
+];
+const hueLight = [
+  "#FBDAC8", //C red"#FF0000"
+  "#FEECD2", //C# orange
+  "#FFFCDB", //D yellow
+  "#ECF4D9", //D# chartreuse
+  "#D5EAD8", //E lime
+  "#D4ECEA", //F springgreen
+  "#D3EDFB", //F# cyan
+  "#D3DEF1", //G deepskyblue
+  "#D2CCE6", //G# blue
+  "#E7D5E8", //A darckviolet
+  "#FADCE9", //A# magenta
+  "#FADBDA", //B Deeppink
+];
+
 function convertTime(second) {
   function zeroPadding(num, length) {
     return ("0000000000" + num).slice(-length);
@@ -115,39 +158,20 @@ function App() {
   }, [song]);
 
   function coloJudge(key, pitch) {
-    const hueDark = [
-      "#C7000B", //C red
-      "#D28300", //C# orange
-      "#DFD000", //D yellow
-      "#7BAA17", //D# chartreuse
-      "#00873C", //E lime
-      "#008A83", //F springgreen
-      "#008DCB", //F# cyan
-      "#005AA0", //G deepskyblue
-      "#181878", //G# blue
-      "#800073", //A darckviolet
-      "#C6006F", //A# magenta
-      "#C70044", //B Deeppink
-    ];
-    const hue = [
-      "#C7000B", //C red"#FF0000"
-      "#FF7F00", //C# orange
-      "#FF7F00", //D yellow
-      "#FF7F00", //D# chartreuse
-      "#00FF00", //E lime
-      "#00FF7F", //F springgreen
-      "#00FFFF", //F# cyan
-      "#007FFF", //G deepskyblue
-      "#0000FF", //G# blue
-      "#7F00FF", //A darckviolet
-      "#FF00FF", //A# magenta
-      "#FF007F", //B Deeppink
-    ];
-
     const colorScale = d3
       .scaleLinear()
       .domain([0, 1])
       .range(["#FFFFFF", hueDark[key]]);
+
+    const color = colorScale(pitch);
+    return color;
+  }
+
+  function coloJudge2(key, pitch) {
+    const colorScale = d3
+      .scaleLinear()
+      .domain([0, 1])
+      .range([hueLight[key], "#000000"]);
 
     const color = colorScale(pitch);
     return color;
@@ -207,7 +231,7 @@ function App() {
   let testPadX = 0;
   let testPadY2 = 0;
   let testPadX2 = 0;
-  const pt = 20;
+  const pt = 40;
   const padding = 10;
   const linePadding = 25;
   const scoreHeight = 450;
@@ -225,7 +249,7 @@ function App() {
   const dBScale = d3
     .scaleLinear()
     .domain(d3.extent(data, (item) => item.loudness_max))
-    .range([2.5, linePadding - 7])
+    .range([2.5, linePadding - 5])
     .nice();
   const dBDiff = dBScale.domain();
 
@@ -437,8 +461,8 @@ function App() {
                             x1={0}
                             y1={pt + linePadding * idx[0] + testPadY}
                             x2={contentWidth}
-                            y2={10 + linePadding * idx[0] + testPadY}
-                            strokeWidth="0.1px"
+                            y2={pt + linePadding * idx[0] + testPadY}
+                            strokeWidth="0.25px"
                             stroke="black"
                           />
                           {/**鍵盤 */}
@@ -478,16 +502,16 @@ function App() {
                                 x1={0}
                                 y1={pt + testPadY}
                                 x2={0}
-                                y2={pt / 2 + linePadding * 12 + testPadY}
-                                strokeWidth="0.3px"
+                                y2={pt + linePadding * 11 + testPadY}
+                                strokeWidth="0.4px"
                                 stroke="black"
                               />
                               <line
                                 x1={contentWidth}
-                                y1={pt / 2 + testPadY}
+                                y1={pt + testPadY}
                                 x2={contentWidth}
-                                y2={pt / 2 + linePadding * 11 + testPadY}
-                                strokeWidth="0.3px"
+                                y2={pt + linePadding * 11 + testPadY}
+                                strokeWidth="0.5px"
                                 stroke="black"
                               />
                             </g>
@@ -509,7 +533,7 @@ function App() {
                           x1={xScale2(item.start) * scaleSize + testPadX}
                           y1={-pt / 2 + testPadY}
                           x2={xScale2(item.start) * scaleSize + testPadX}
-                          y2={(pt * 3) / 2 + linePadding * 12 + testPadY}
+                          y2={pt / 2 + linePadding * 12 + testPadY}
                           strokeWidth="70px"
                           opacity="0"
                           stroke={coloJudge(musicKey, 1)}
@@ -520,12 +544,10 @@ function App() {
                         />
                         <line
                           x1={xScale2(item.start) * scaleSize + testPadX}
-                          //y1={-pt}
-                          y1={pt / 2 + testPadY}
+                          y1={pt + testPadY}
                           x2={xScale2(item.start) * scaleSize + testPadX}
-                          //y2={pt * 2 + linePadding * 12}
-                          y2={pt + pt / 2 + linePadding * 11 + testPadY}
-                          strokeWidth="1.0px"
+                          y2={pt + linePadding * 11 + testPadY}
+                          strokeWidth="2.5px"
                           stroke={coloJudge(musicKey, 1)}
                         />
                       </g>
@@ -553,10 +575,11 @@ function App() {
                         />
                         <line
                           x1={xScale2(item.start) * scaleSize + testPadX}
-                          y1={-pt / 2 + testPadY}
+                          //y1={-pt / 2 + testPadY}
+                          y1={testPadY}
                           x2={xScale2(item.start) * scaleSize + testPadX}
                           y2={(pt * 3) / 2 + linePadding * 12 + testPadY}
-                          strokeWidth="4px"
+                          strokeWidth="6px"
                           stroke={coloJudge(musicKey, 1)}
                         />
 
@@ -609,7 +632,7 @@ function App() {
                             }
                             cy={pt + linePadding * j + testPadY2}
                             r={dBScale(item.loudness_max)}
-                            //fill={coloJudge(item.key, item.pitches[11 - j])}
+                            fill={coloJudge2(item.key, item.pitches[11 - j])}
                             fill={scale(item.pitches[11 - j])}
                             opacity="0.85"
                             //style={{ transitionDuration: "1s" }}
