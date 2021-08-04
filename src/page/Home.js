@@ -116,7 +116,7 @@ function Home() {
   console.log(feature);
 
   return (
-    <div className="section">
+    <div className="section pb-0">
       <p className="subtitle is-4 mb-2">曲名を選択してください</p>
       <div className="select">
         <select
@@ -141,7 +141,7 @@ function Home() {
       </div>
 
       <div className="hero">
-        <div className="hero-body">
+        <div className="hero-body" style={{ width: "100%" }}>
           <div style={{ display: "flex", justifyContent: "center" }}>
             <div
               className=""
@@ -154,7 +154,7 @@ function Home() {
             >
               <div>
                 <p className="py-1">
-                  曲名
+                  <b> 曲名</b>
                   <br />
                   <div className="pl-4">
                     <a
@@ -167,7 +167,7 @@ function Home() {
                   </div>
                 </p>
                 <p className="py-1">
-                  アーティスト
+                  <b>アーティスト</b>
                   <br />
                   {meta?.artists.map((item2, j) => {
                     return (
@@ -186,11 +186,15 @@ function Home() {
                 </p>
 
                 <p className="pt-3 pb-1">
-                  テンポ：{Math.round(feature?.tempo)}
+                  <b>テンポ：</b> {Math.round(feature?.tempo)}
                 </p>
-                <p className="py-1">拍子：{feature?.time_signature}拍子</p>
                 <p className="py-1">
-                  調：{keyDict[feature?.key]}
+                  <b>拍子：</b>
+                  {feature?.time_signature}拍子
+                </p>
+                <p className="py-1">
+                  <b>調：</b>
+                  {keyDict[feature?.key]}
                   {feature?.mode == 0 ? "短調" : "長調"}
                 </p>
               </div>

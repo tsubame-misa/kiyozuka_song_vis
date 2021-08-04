@@ -255,44 +255,31 @@ function App() {
       <main>
         <section className="section">
           <div style={{ display: "flex" }}>
-            <div style={{ display: "flex", alignItems: "center" }}>
-              <div className="subtitle is-3">{song?.name}</div>
-
-              {/*<select
-                onChange={(e) => {
-                  setSong(e.target.value);
-                }}
-                style={{ height: "2rem" }}
-              >
-                <option value="/baby_got_bless_you.json">
-                  Baby god bless you
-                </option>
-                <option value="/for_tomorrrow.json">For Tomorrow</option>
-                <option value="/hibi.json">日々</option>
-                <option value="/aotonatsu.json">青と夏</option>
-                <option value="/hutarigoto.json">ふたりごと</option>
-                <option value="/ultra_soul.json">ultra soul</option>
-                <option value="/wild-screenbaroque.json">
-                  wi(l)d-screen baroque
-                </option>
-                <option value="Happiness_on_High_TokyoDisneyResort30.json">
-                  Happiness on High - Tokyo Disney Resort 30th Anniversary Fire
-                  Work
-                </option>
-                <option value="MEDAL_SUZDAL_PANIC.json">
-                  MEDAL SUZDAL PANIC◎○●
-                </option>
-                <option value="cuty_hunny.json">キューティーハニー</option>
-              </select>*/}
-            </div>
+            <div className="subtitle is-3">{song?.name}</div>
           </div>
 
-          {/*} <div style={{ width: "100%", height: "90vh" }}>*/}
+          {data.length === 0 ? (
+            <div
+              style={{
+                fontSize: "1.5rem",
+                height: "300px",
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                // border: "1px solid",
+              }}
+            >
+              loading...
+            </div>
+          ) : (
+            []
+          )}
+
           <div style={{ width: "100%", height: "90vh" }}>
             <svg
               viewBox={`${-margin.left} ${-margin.top} ${svgWidth} ${svgHeight}`}
             >
-              <g /*transform={`scale(0.15, 0.15)`}*/>
+              <g>
                 <text
                   x="0"
                   y={-margin.top / 2}
