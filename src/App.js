@@ -449,7 +449,10 @@ function App() {
                 {AllData.map((item, i) => {
                   item.x = xScale2(item.start) * scaleSize + testPadX;
                   item.y = -pt / 2 + testPadY;
-                  item.key = musicKey;
+                  if (item.key === undefined) {
+                    item.key = musicKey;
+                  }
+                  //item.key = musicKey;
                   if (
                     i === 0 ||
                     testPadX + xScale2(item.start) * scaleSize > contentWidth
@@ -646,7 +649,7 @@ function App() {
                             r={dBScale(item.loudness_max)}
                             fill={coloJudge2(item.key, item.pitches[11 - j])}
                             fill={scale(item.pitches[11 - j])}
-                            opacity="0.75"
+                            opacity="0.5"
                             //style={{ transitionDuration: "1s" }}
                           />
                         </g>
