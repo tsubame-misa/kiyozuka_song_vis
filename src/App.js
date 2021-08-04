@@ -275,7 +275,8 @@ function App() {
       });
     }
   }
-  console.log(info);
+
+  console.log(clientX, clientY);
 
   return (
     <div>
@@ -458,6 +459,11 @@ function App() {
                     testPadX + xScale2(item.start) * scaleSize > contentWidth
                   ) {
                     if (i !== 0) {
+                      item.x =
+                        xScale2(item.start) * scaleSize +
+                        testPadX -
+                        contentWidth;
+                      item.y = -pt / 2 + testPadY + scoreHeight;
                       testPadY += scoreHeight;
                       testPadX -= contentWidth;
                     }
@@ -563,7 +569,7 @@ function App() {
                           y1={pt + testPadY}
                           x2={xScale2(item.start) * scaleSize + testPadX}
                           y2={pt + linePadding * 11 + testPadY}
-                          strokeWidth="2.5px"
+                          strokeWidth="1.5px"
                           stroke={coloJudge(musicKey, 1)}
                         />
                       </g>
@@ -586,11 +592,10 @@ function App() {
                         />
                         <line
                           x1={xScale2(item.start) * scaleSize + testPadX}
-                          //y1={-pt / 2 + testPadY}
-                          y1={testPadY}
+                          y1={pt + testPadY}
                           x2={xScale2(item.start) * scaleSize + testPadX}
-                          y2={(pt * 3) / 2 + linePadding * 12 + testPadY}
-                          strokeWidth="6px"
+                          y2={pt + linePadding * 11 + testPadY}
+                          strokeWidth="8px"
                           stroke={coloJudge(musicKey, 1)}
                         />
 
