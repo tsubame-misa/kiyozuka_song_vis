@@ -340,7 +340,7 @@ function App() {
                   const sound_r =
                     dBDiff[0] + ((dBDiff[1] - dBDiff[0]) / 5) * idx;
                   return (
-                    <g>
+                    <g key={idx}>
                       <circle
                         cx={275 + 80 * idx}
                         cy={-margin.top / 2}
@@ -445,7 +445,7 @@ function App() {
                 </text>
                 {hueDark.map((color, c) => {
                   return (
-                    <g>
+                    <g key={c}>
                       <rect
                         x={2150 + 225 * c}
                         y={-margin.top + margin.top / 4}
@@ -504,7 +504,7 @@ function App() {
                       [11, 0],
                     ].map((idx) => {
                       return (
-                        <g>
+                        <g key={idx}>
                           {/**五線 */}
                           <line
                             x1={0}
@@ -573,7 +573,7 @@ function App() {
                   }
                   if (item.name === "beat") {
                     return (
-                      <g>
+                      <g key={i}>
                         {/**線が細すぎて押しにくいのでダミー */}
                         <line
                           x1={xScale2(item.start) * scaleSize + testPadX}
@@ -599,7 +599,7 @@ function App() {
                   } else if (item.name === "bar") {
                     barCnt += 1;
                     return (
-                      <g>
+                      <g key={i}>
                         {/**線が細すぎて押しにくいのでダミー */}
                         <line
                           x1={xScale2(item.start) * scaleSize + testPadX}
@@ -669,6 +669,7 @@ function App() {
                           id="onpu"
                           onMouseEnter={() => onHover(item)}
                           onMouseLeave={() => setShow(false)}
+                          key={j}
                         >
                           <circle
                             //key={item.start}
