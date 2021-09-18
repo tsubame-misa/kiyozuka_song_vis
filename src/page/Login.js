@@ -1,10 +1,12 @@
 import { useEffect, useState } from "react";
 import PlaylistScreen from "../components/playlistScreen";
+import MetaScreen from "../components/metaScreen";
 
 const Login = () => {
   const [userData, setUserData] = useState(null);
   const [playlistData, setPlaylistData] = useState(null);
   const [playlistId, setPlaylistId] = useState("");
+  const [musicId, setMusicId] = useState("");
   //const [token, setToken] = useState("");
   const token = sessionStorage.getItem("spotifyAccessToken") || "";
 
@@ -70,29 +72,36 @@ const Login = () => {
       </div>
     );
   }
+
   return (
     <div>
       <button>logout</button>
       <div>
         <div>ユーザーネーム：{userData?.display_name}</div>
-        <div>
-          <div>playlist</div>
-          {playlistData?.items.map((item) => {
-            return (
-              <div
-                key={item.id}
-                onClick={() => {
-                  console.log(item.id);
-                  setPlaylistId(item.id);
-                }}
-              >
-                {item.name}
-              </div>
-            );
-          })}
+        <div className="columns">
+          <div className="column is-2">
+            <div>playlist</div>
+            {playlistData?.items?.map((item) => {
+              return (
+                <div
+                  key={item.id}
+                  onClick={() => {
+                    console.log(item.id);
+                    setPlaylistId(item.id);
+                  }}
+                >
+                  {item.name}
+                </div>
+              );
+            })}
+          </div>
+          <div className="column">
+            <PlaylistScreen id={playlistId} setMusicId={setMusicId} />
+          </div>
+          <div className="column">
+            <MetaScreen id={musicId} />
+          </div>
         </div>
-        <div>playlist screen</div>
-        <PlaylistScreen id={playlistId} />
       </div>
     </div>
   );

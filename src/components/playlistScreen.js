@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
+import "./playlistScreen.css";
 
-const PlaylistScreen = ({ id }) => {
+const PlaylistScreen = ({ id, setMusicId }) => {
   const [playlist, setPlaylist] = useState(null);
   const [playlistDetail, setPlaylistDetail] = useState([]);
   const token = sessionStorage.getItem("spotifyAccessToken") || "";
@@ -40,18 +41,28 @@ const PlaylistScreen = ({ id }) => {
     }
   }, [id]);
 
-  console.log(playlist);
-  console.log(playlistDetail);
+  //   console.log(playlist);
+  //   console.log(playlistDetail);
 
   return (
     <div>
-      <div>{playlist?.name}</div>
-      <div>
-        <img src={playlist?.images[0].url} />
+      <div className="playlist-name-group">
+        <img className="playlist-img" src={playlist?.images[0].url} />
+        <div className="playlist-name">{playlist?.name}</div>
       </div>
+
       <div>
         {playlistDetail.items?.map((item) => {
-          return <div key={item.track.id}>{item.track.name}</div>;
+          return (
+            <div
+              key={item.track.id}
+              onClick={() => {
+                setMusicId(item.track.id);
+              }}
+            >
+              {item.track.name}
+            </div>
+          );
         })}
       </div>
     </div>
