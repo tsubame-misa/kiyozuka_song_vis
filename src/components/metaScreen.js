@@ -44,7 +44,7 @@ const MetaScreen = ({ id }) => {
 
   return (
     <div>
-      <p className="py-1">
+      <div className="py-1">
         <b>曲名</b>
         <br />
         <a
@@ -54,9 +54,9 @@ const MetaScreen = ({ id }) => {
         >
           {meta?.name}
         </a>
-      </p>
+      </div>
 
-      <p className="py-1">
+      <div className="py-1">
         <b>アーティスト</b>
         <br />
         {meta?.artists?.map((item, j) => {
@@ -73,20 +73,20 @@ const MetaScreen = ({ id }) => {
             </div>
           );
         })}
-      </p>
+      </div>
 
-      <p className="pt-3 pb-1">
+      <div className="pt-3 pb-1">
         <b>テンポ：</b> {Math.round(feature?.tempo)}
-      </p>
-      <p className="py-1">
+      </div>
+      <div className="py-1">
         <b>拍子：</b>
         {feature?.time_signature}拍子
-      </p>
-      <p className="py-1">
+      </div>
+      <div className="py-1">
         <b>調：</b>
         {keyDict[feature?.key]}
         {feature?.mode == 0 ? "短調" : "長調"}
-      </p>
+      </div>
       <div className="m-3" style={{ width: "350px", minWidth: "350px" }}>
         <RaderChart data={feature} />
       </div>

@@ -8,7 +8,7 @@ const PlaylistScreen = ({ id, setMusicId }) => {
 
   useEffect(() => {
     console.log(id);
-    if (id !== null) {
+    if (id !== "") {
       (async () => {
         //プレイリストの情報の取得
         const request = await fetch(

@@ -8,7 +8,9 @@ const Login = () => {
   const [playlistId, setPlaylistId] = useState("");
   const [musicId, setMusicId] = useState("");
   //const [token, setToken] = useState("");
-  const token = sessionStorage.getItem("spotifyAccessToken") || "";
+  const [token, setToken] = useState(
+    sessionStorage.getItem("spotifyAccessToken") || ""
+  );
 
   const scopes = [
     "streaming",
@@ -34,33 +36,40 @@ const Login = () => {
     window.location.href = loginPath;
   }
 
-  useEffect(() => {
-    (async () => {
-      //ユーザーデータの取得
-      const request = await fetch(`https://api.spotify.com/v1/me`, {
-        method: "GET",
-        headers: {
-          Authorization: "Bearer " + token,
-        },
-        json: true,
-      });
-      const responce = await request.json();
-      setUserData(responce);
+  function logout() {
+    setToken("");
+    sessionStorage.clear();
+  }
 
-      //プレイリストの取得
-      const requestPlaylist = await fetch(
-        `https://api.spotify.com/v1/me/playlists`,
-        {
+  useEffect(() => {
+    if (token !== "") {
+      (async () => {
+        //ユーザーデータの取得
+        const request = await fetch(`https://api.spotify.com/v1/me`, {
           method: "GET",
           headers: {
             Authorization: "Bearer " + token,
           },
           json: true,
-        }
-      );
-      const responcePlaylist = await requestPlaylist.json();
-      setPlaylistData(responcePlaylist);
-    })();
+        });
+        const responce = await request.json();
+        setUserData(responce);
+
+        //プレイリストの取得
+        const requestPlaylist = await fetch(
+          `https://api.spotify.com/v1/me/playlists`,
+          {
+            method: "GET",
+            headers: {
+              Authorization: "Bearer " + token,
+            },
+            json: true,
+          }
+        );
+        const responcePlaylist = await requestPlaylist.json();
+        setPlaylistData(responcePlaylist);
+      })();
+    }
   }, []);
 
   //https://api.spotify.com/v1/playlists/{playlist_id}
@@ -75,7 +84,7 @@ const Login = () => {
 
   return (
     <div>
-      <button>logout</button>
+      <button onClick={() => logout()}>logout</button>
       <div>
         <div>ユーザーネーム：{userData?.display_name}</div>
         <div className="columns">
