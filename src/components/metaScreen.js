@@ -8,35 +8,41 @@ const MetaScreen = ({ id }) => {
   const [feature, setFeature] = useState(null);
   const token = sessionStorage.getItem("spotifyAccessToken") || "";
   useEffect(() => {
-    (async () => {
-      //曲情報の取得
-      const request = await fetch(`https://api.spotify.com/v1/tracks/${id}`, {
-        method: "GET",
-        headers: {
-          Authorization: "Bearer " + token,
-        },
-        json: true,
-      });
-      const responce = await request.json();
-      setMeta(responce);
-
-      //特徴の取得
-      const requestFeature = await fetch(
-        `https://api.spotify.com/v1/audio-features/${id}`,
-        {
+    if (id !== "") {
+      (async () => {
+        //曲情報の取得
+        const request = await fetch(`https://api.spotify.com/v1/tracks/${id}`, {
           method: "GET",
           headers: {
             Authorization: "Bearer " + token,
           },
           json: true,
-        }
-      );
-      const responceFeature = await requestFeature.json();
-      setFeature(responceFeature);
-    })();
+        });
+        const responce = await request.json();
+        setMeta(responce);
+
+        //特徴の取得
+        const requestFeature = await fetch(
+          `https://api.spotify.com/v1/audio-features/${id}`,
+          {
+            method: "GET",
+            headers: {
+              Authorization: "Bearer " + token,
+            },
+            json: true,
+          }
+        );
+        const responceFeature = await requestFeature.json();
+        setFeature(responceFeature);
+      })();
+    }
   }, [id]);
 
   console.log(meta);
+
+  if (id === "") {
+    return <div></div>;
+  }
 
   return (
     <div>
@@ -57,7 +63,7 @@ const MetaScreen = ({ id }) => {
         <br />
         {meta?.artists?.map((item, j) => {
           return (
-            <div className="pl-4">
+            <div className="pl-4" key={j}>
               <a
                 href={item.external_urls.spotify}
                 target="_blank"
