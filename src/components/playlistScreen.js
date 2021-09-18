@@ -46,7 +46,7 @@ const PlaylistScreen = ({ id, setMusicId }) => {
 
   return (
     <div>
-      <div className="playlist-name-group">
+      <div className={playlist ? "playlist-name-group" : ""}>
         <img className="playlist-img" src={playlist?.images[0].url} />
         <div className="playlist-name">{playlist?.name}</div>
       </div>

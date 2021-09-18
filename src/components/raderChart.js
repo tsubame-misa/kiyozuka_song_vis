@@ -103,7 +103,7 @@ function RaderChart({ data }) {
   }
 
   const margin = {
-    left: 35,
+    left: 25,
     right: 20,
     top: 10,
     bottom: 10,

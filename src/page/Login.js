@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import PlaylistScreen from "../components/playlistScreen";
 import MetaScreen from "../components/metaScreen";
 import DefaultHome from "./Home";
+import "./login.css";
 
 const Home = () => {
   const [userData, setUserData] = useState(null);
@@ -70,12 +71,14 @@ const Home = () => {
     }
   }, []);
 
-  //https://api.spotify.com/v1/playlists/{playlist_id}
-
   if (token === "") {
     return (
       <div>
-        <button onClick={login}>Sign in with Spotify</button>
+        <div className="auth-button-group">
+          <button className="button" onClick={login}>
+            Sign in with Spotify
+          </button>
+        </div>
         <DefaultHome />
       </div>
     );
@@ -83,15 +86,19 @@ const Home = () => {
 
   return (
     <div>
-      <div>
-        <button onClick={() => logout()}>logout</button>
+      <div className="auth-button-group">
+        <button className="button" onClick={() => logout()}>
+          logout
+        </button>
       </div>
 
       <div>
-        <div>ユーザーネーム：{userData?.display_name}</div>
+        <div className="hello-user">
+          {userData?.display_name}さん &ensp; My Favorite Songs Visへようこそ
+        </div>
         <div className="columns">
           <div className="column is-2">
-            <div>playlist</div>
+            <div className="playlist-header">プレイリスト</div>
             {playlistData?.items?.map((item) => {
               return (
                 <div

@@ -1,0 +1,15 @@
+.artist {
+  display: flex;
+}
+
+.info-header {
+  height: 90px;
+  display: flex;
+  flex-direction: column;
+  padding: 5px 0px;
+  border-top: solid;
+  border-bottom: solid;
+  background-color: #cee6ff30;
+  margin: 5px 0px;
+  justify-content: flex-end;
+}

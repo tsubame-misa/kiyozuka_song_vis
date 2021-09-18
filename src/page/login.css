@@ -1,0 +1,21 @@
+.auth-button-group {
+  display: flex;
+  justify-content: center;
+}
+
+.hello-user {
+  padding: 1rem 0;
+  font-size: 1.25rem;
+}
+
+.playlist-header {
+  height: 90px;
+  padding: 10px 0;
+  font-size: 1.25rem;
+  display: flex;
+  align-items: flex-end;
+  border-top: solid;
+  border-bottom: solid;
+  background-color: #cee6ff30;
+  margin: 5px 0px;
+}
