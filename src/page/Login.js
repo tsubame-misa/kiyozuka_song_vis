@@ -1,8 +1,10 @@
 import { useEffect, useState } from "react";
+import PlaylistScreen from "../components/playlistScreen";
 
 const Login = () => {
   const [userData, setUserData] = useState(null);
   const [playlistData, setPlaylistData] = useState(null);
+  const [playlistId, setPlaylistId] = useState("");
   //const [token, setToken] = useState("");
   const token = sessionStorage.getItem("spotifyAccessToken") || "";
 
@@ -61,9 +63,6 @@ const Login = () => {
 
   //https://api.spotify.com/v1/playlists/{playlist_id}
 
-  console.log(userData);
-  console.log(playlistData);
-
   if (token === "") {
     return (
       <div>
@@ -76,6 +75,24 @@ const Login = () => {
       <button>logout</button>
       <div>
         <div>ユーザーネーム：{userData?.display_name}</div>
+        <div>
+          <div>playlist</div>
+          {playlistData?.items.map((item) => {
+            return (
+              <div
+                key={item.id}
+                onClick={() => {
+                  console.log(item.id);
+                  setPlaylistId(item.id);
+                }}
+              >
+                {item.name}
+              </div>
+            );
+          })}
+        </div>
+        <div>playlist screen</div>
+        <PlaylistScreen id={playlistId} />
       </div>
     </div>
   );
