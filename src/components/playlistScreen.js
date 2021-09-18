@@ -8,7 +8,6 @@ const PlaylistScreen = ({ id, musicId, setMusicId }) => {
   const token = sessionStorage.getItem("spotifyAccessToken") || "";
 
   useEffect(() => {
-    console.log(id);
     if (id !== "") {
       (async () => {
         //プレイリストの情報の取得
@@ -41,9 +40,6 @@ const PlaylistScreen = ({ id, musicId, setMusicId }) => {
       })();
     }
   }, [id]);
-
-  //   console.log(playlist);
-  //   console.log(playlistDetail);
 
   return (
     <div>

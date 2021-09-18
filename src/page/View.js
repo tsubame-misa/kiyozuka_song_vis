@@ -110,7 +110,7 @@ function App() {
           setSong(m);
         }
       }
-      // const request2 = await fetch(path);
+      //const request2 = await fetch(path);
       // const musicData = await request2.json();
       const request2 = await fetch(
         `https://api.spotify.com/v1/audio-analysis/${name}`,

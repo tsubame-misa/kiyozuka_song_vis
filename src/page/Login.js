@@ -4,7 +4,7 @@ import MetaScreen from "../components/metaScreen";
 import DefaultHome from "./Home";
 import "./login.css";
 
-const Home = () => {
+const Home = ({ history }) => {
   const [userData, setUserData] = useState(null);
   const [playlistData, setPlaylistData] = useState(null);
   const [playlistId, setPlaylistId] = useState("");
@@ -79,7 +79,7 @@ const Home = () => {
             Sign in with Spotify
           </button>
         </div>
-        <DefaultHome />
+        {/*<DefaultHome />*/}
       </div>
     );
   }
@@ -105,7 +105,6 @@ const Home = () => {
                   key={item.id}
                   className={item.id === playlistId ? "selected-item" : "item"}
                   onClick={() => {
-                    console.log(item.id);
                     setPlaylistId(item.id);
                   }}
                 >
