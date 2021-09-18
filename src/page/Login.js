@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import PlaylistScreen from "../components/playlistScreen";
 import MetaScreen from "../components/metaScreen";
 
-const Login = () => {
+const Home = () => {
   const [userData, setUserData] = useState(null);
   const [playlistData, setPlaylistData] = useState(null);
   const [playlistId, setPlaylistId] = useState("");
@@ -23,10 +23,7 @@ const Login = () => {
   const params = new URLSearchParams();
   params.append("client_id", process.env.REACT_APP_CLIENTID);
   params.append("response_type", "code");
-  params.append(
-    "redirect_uri",
-    process.env.RETURN_TO || "http://localhost:3000/api/auth/authorize"
-  );
+  params.append("redirect_uri", process.env.REACT_APP_RETURN_TO);
   params.append("scope", scopes.join(" "));
   params.append("state", "state");
   const loginPath = `https://accounts.spotify.com/authorize?${params.toString()}`;
@@ -116,4 +113,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default Home;

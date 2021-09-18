@@ -1,14 +1,13 @@
 import { useEffect, useState } from "react";
-import request from "request";
 
-const Sample = () => {
+const Sample = ({ history }) => {
   const code = new URL(window.location).searchParams.get("code") ?? "";
   const [token, setToken] = useState("");
 
   const params = new URLSearchParams();
   params.append("grant_type", "authorization_code");
   params.append("code", code);
-  params.append("redirect_uri", "http://localhost:3000/api/auth/authorize");
+  params.append("redirect_uri", process.env.REACT_APP_RETURN_TO);
 
   useEffect(() => {
     (async () => {
@@ -28,12 +27,10 @@ const Sample = () => {
       );
       const responce = await request.json();
       setToken(responce);
-      console.log(responce);
-      console.log(request);
       if (request.status === 200) {
         sessionStorage.setItem("spotifyAccessToken", responce.access_token);
         sessionStorage.setItem("spotifyRefreshToken", responce.refresh_token);
-        window.location.href = "/login";
+        history.push("/");
       }
     })();
   }, []);

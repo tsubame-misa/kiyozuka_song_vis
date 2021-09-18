@@ -101,7 +101,6 @@ function App() {
   const { name } = useParams();
   const token = sessionStorage.getItem("spotifyAccessToken") || "";
 
-  console.log("name", name);
   useEffect(() => {
     let path = "/";
     (async () => {
@@ -124,7 +123,6 @@ function App() {
         }
       );
       const musicData = await request2.json();
-      console.log(musicData);
 
       const sectionData = await musicData.sections;
       const Data = musicData.segments;
