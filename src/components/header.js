@@ -5,7 +5,7 @@ function Header() {
     <header className="hero is-dark is-bold">
       <div className="hero-body">
         <div className="container">
-          <div className="title mb-1">My Favarite Songs Vis</div>
+          <div className="title mb-1">My Favorite Songs Vis</div>
           <div style={{ textAlign: "right" }}>
             <p> 渡邉みさと</p>
             <p>

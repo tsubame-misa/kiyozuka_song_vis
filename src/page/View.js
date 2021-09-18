@@ -99,7 +99,6 @@ function App() {
   const [meta, setMeta] = useState(null);
   const [info, setInfo] = useState({ musicKey: "", time: "" });
   const { name } = useParams();
-  console.log(name);
 
   useEffect(() => {
     let path = "/";
@@ -110,7 +109,6 @@ function App() {
           setSong(m);
         }
       }
-      console.log(path);
       const request2 = await fetch(path);
       const musicData = await request2.json();
       const sectionData = await musicData.sections;
@@ -205,7 +203,6 @@ function App() {
   };
   const contentWidth = 4500; //5分
   //const contentWidth = (4500 * 300) / AllData[AllData.length - 1].start;
-  console.log(contentWidth);
   const contentHeight = 250;
 
   const xScale2 = d3
@@ -231,7 +228,6 @@ function App() {
     testArray.push(p + w_min);
     p += w_min;
   }*/
-  console.log(AllData);
 
   let musicKey = data[0]?.key;
   let testPadY = 0;

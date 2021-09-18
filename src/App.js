@@ -11,6 +11,8 @@ import Footer from "./components/Footer";*/
 import View from "./page/View";
 import Home from "./page/Home";
 import Header from "./components/header";
+import Login from "./page/Login";
+import Sample from "./page/Sample";
 import Footer from "./components/footer";
 
 function App() {
@@ -26,6 +28,12 @@ function App() {
             <Switch>
               <Route path="/" exact>
                 <Home />
+              </Route>
+              <Route path="/login" exact>
+                <Login />
+              </Route>
+              <Route path="/api/auth/authorize" exact>
+                <Sample />
               </Route>
               <Route path="/view/:name" exact>
                 <View />

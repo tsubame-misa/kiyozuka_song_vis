@@ -112,9 +112,6 @@ function Home() {
     });
   }, [song]);
 
-  console.log(meta);
-  console.log(feature);
-
   return (
     <div className="section pb-0">
       <p className="subtitle is-4 mb-2">曲名を選択してください</p>
