@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import PlaylistScreen from "../components/playlistScreen";
 import MetaScreen from "../components/metaScreen";
+import DefaultHome from "./Home";
 
 const Home = () => {
   const [userData, setUserData] = useState(null);
@@ -75,13 +76,17 @@ const Home = () => {
     return (
       <div>
         <button onClick={login}>Sign in with Spotify</button>
+        <DefaultHome />
       </div>
     );
   }
 
   return (
     <div>
-      <button onClick={() => logout()}>logout</button>
+      <div>
+        <button onClick={() => logout()}>logout</button>
+      </div>
+
       <div>
         <div>ユーザーネーム：{userData?.display_name}</div>
         <div className="columns">

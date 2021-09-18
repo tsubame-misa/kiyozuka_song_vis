@@ -49,7 +49,7 @@ export const musicIDs = [
   },
 ];
 
-function Home() {
+function DefaultHome() {
   const [song, setSong] = useState("/baby_got_bless_you.json");
   const [meta, setMeta] = useState(null);
   const [musicID, setMusicID] = useState("2kRpKqkq1yYpEZeIjileCb");
@@ -114,7 +114,7 @@ function Home() {
 
   return (
     <div className="section pb-0">
-      <p className="subtitle is-4 mb-2">曲名を選択してください</p>
+      <div className="subtitle is-4 mb-2">曲名を選択してください</div>
       <div className="select">
         <select
           onChange={(e) => {
@@ -150,7 +150,7 @@ function Home() {
               }}
             >
               <div>
-                <p className="py-1">
+                <div className="py-1">
                   <b> 曲名</b>
                   <br />
                   <div className="pl-4">
@@ -162,13 +162,13 @@ function Home() {
                       {meta?.name}
                     </a>
                   </div>
-                </p>
-                <p className="py-1">
+                </div>
+                <div className="py-1">
                   <b>アーティスト</b>
                   <br />
                   {meta?.artists.map((item2, j) => {
                     return (
-                      <div className="pl-4">
+                      <div className="pl-4" key={j}>
                         <a
                           href={item2.external_urls.spotify}
                           target="_blank"
@@ -180,20 +180,20 @@ function Home() {
                       </div>
                     );
                   })}
-                </p>
+                </div>
 
-                <p className="pt-3 pb-1">
+                <div className="pt-3 pb-1">
                   <b>テンポ：</b> {Math.round(feature?.tempo)}
-                </p>
-                <p className="py-1">
+                </div>
+                <div className="py-1">
                   <b>拍子：</b>
                   {feature?.time_signature}拍子
-                </p>
-                <p className="py-1">
+                </div>
+                <div className="py-1">
                   <b>調：</b>
                   {keyDict[feature?.key]}
                   {feature?.mode == 0 ? "短調" : "長調"}
-                </p>
+                </div>
               </div>
             </div>
             <div className="m-3" style={{ width: "350px", minWidth: "350px" }}>
@@ -216,4 +216,4 @@ function Home() {
   );
 }
 
-export default Home;
+export default DefaultHome;
