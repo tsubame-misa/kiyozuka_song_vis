@@ -99,7 +99,9 @@ function App() {
   const [meta, setMeta] = useState(null);
   const [info, setInfo] = useState({ musicKey: "", time: "" });
   const { name } = useParams();
+  const token = sessionStorage.getItem("spotifyAccessToken") || "";
 
+  console.log("name", name);
   useEffect(() => {
     let path = "/";
     (async () => {
@@ -109,8 +111,21 @@ function App() {
           setSong(m);
         }
       }
-      const request2 = await fetch(path);
+      // const request2 = await fetch(path);
+      // const musicData = await request2.json();
+      const request2 = await fetch(
+        `https://api.spotify.com/v1/audio-analysis/${name}`,
+        {
+          method: "GET",
+          headers: {
+            Authorization: "Bearer " + token,
+          },
+          json: true,
+        }
+      );
       const musicData = await request2.json();
+      console.log(musicData);
+
       const sectionData = await musicData.sections;
       const Data = musicData.segments;
       for (let s = 1; s < sectionData.length; s++) {

@@ -38,8 +38,6 @@ const MetaScreen = ({ id }) => {
     }
   }, [id]);
 
-  console.log(meta);
-
   if (id === "") {
     return <div></div>;
   }
