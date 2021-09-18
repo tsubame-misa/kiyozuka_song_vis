@@ -165,21 +165,17 @@ function App() {
   };
 
   useEffect(() => {
-    request.post(authOptions, function (error, response, body) {
-      if (!error && response.statusCode === 200) {
-        var token = body.access_token;
-        var options = {
-          url: `https://api.spotify.com/v1/tracks/${name}`,
-          headers: {
-            Authorization: "Bearer " + token,
-          },
-          json: true,
-        };
-        request.get(options, function (error, response, body) {
-          setMeta(body);
-        });
-      }
-    });
+    (async () => {
+      const request = await fetch(`https://api.spotify.com/v1/tracks/${name}`, {
+        method: "GET",
+        headers: {
+          Authorization: "Bearer " + token,
+        },
+        json: true,
+      });
+      const responce = await request.json();
+      setMeta(responce);
+    })();
   }, [song]);
 
   function coloJudge(key, pitch) {
@@ -303,13 +299,13 @@ function App() {
       <main>
         <section className="section">
           <div style={{ display: "flex" }}>
-            <div className="subtitle is-3">
+            <div className="subtitle is-3 pb-4">
               <a
                 href={meta?.external_urls.spotify}
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                {song?.name}
+                {meta?.name}
               </a>
             </div>
           </div>

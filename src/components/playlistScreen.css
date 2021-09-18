@@ -17,3 +17,11 @@
   font-size: 1.75rem;
   padding-left: 10px;
 }
+
+.item:hover {
+  color: #7ba9d8;
+}
+
+.selected-item {
+  color: #485ec6;
+}

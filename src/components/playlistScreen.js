@@ -1,7 +1,8 @@
 import { useState, useEffect } from "react";
+import { musicIDs } from "../page/Home";
 import "./playlistScreen.css";
 
-const PlaylistScreen = ({ id, setMusicId }) => {
+const PlaylistScreen = ({ id, musicId, setMusicId }) => {
   const [playlist, setPlaylist] = useState(null);
   const [playlistDetail, setPlaylistDetail] = useState([]);
   const token = sessionStorage.getItem("spotifyAccessToken") || "";
@@ -56,6 +57,7 @@ const PlaylistScreen = ({ id, setMusicId }) => {
           return (
             <div
               key={item.track.id}
+              className={item.track.id === musicId ? "selected-item" : "item"}
               onClick={() => {
                 setMusicId(item.track.id);
               }}

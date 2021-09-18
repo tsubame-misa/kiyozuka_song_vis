@@ -19,3 +19,11 @@
   background-color: #cee6ff30;
   margin: 5px 0px;
 }
+
+.item:hover {
+  color: #7ba9d8;
+}
+
+.selected-item {
+  color: #485ec6;
+}

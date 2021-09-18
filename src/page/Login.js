@@ -103,6 +103,7 @@ const Home = () => {
               return (
                 <div
                   key={item.id}
+                  className={item.id === playlistId ? "selected-item" : "item"}
                   onClick={() => {
                     console.log(item.id);
                     setPlaylistId(item.id);
@@ -114,7 +115,11 @@ const Home = () => {
             })}
           </div>
           <div className="column">
-            <PlaylistScreen id={playlistId} setMusicId={setMusicId} />
+            <PlaylistScreen
+              id={playlistId}
+              musicId={musicId}
+              setMusicId={setMusicId}
+            />
           </div>
           <div className="column">
             <MetaScreen id={musicId} />
